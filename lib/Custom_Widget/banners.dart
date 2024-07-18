@@ -23,7 +23,7 @@ class AdBanner extends StatelessWidget {
         ),
       ),
       width: screenWidth * 0.95,
-      height: screenHeight * 0.171,
+      height: screenHeight * 0.181,
       child: Padding(
         padding: EdgeInsets.all(screenWidth * 0.04),
         child: Row(

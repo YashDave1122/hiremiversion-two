@@ -16,12 +16,13 @@ class RegistrationController {
         headers: {'Content-Type': 'application/json'},
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return true; // Registration successful
       } else {
         // Handle errors based on response.statusCode
         print( "${response.body}");
-        print('Error ${response.statusCode}: ${response.reasonPhrase}');
+
+        print('Error hai bro ${response.statusCode}: ${response.body}');
         return false; // Registration failed
       }
     } catch (e) {

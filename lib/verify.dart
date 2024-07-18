@@ -25,6 +25,7 @@ final _formKey = GlobalKey<FormState>();
   String? _selectedState;
   DateTime? _selectedDate;
    String _userId="";
+   String _fullName ="";
 late VerifyController _verifyController;
 
   // List<String> _states = ['State 1', 'State 2', 'State 3', 'State 4'];
@@ -117,7 +118,11 @@ void initState() {
   super.initState();
   _verifyController = VerifyController();
   _fetchUserProfile();
+
+  _fetchFullName();
+
 }
+
 Future<void> _fetchUserData() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? storedEmail = prefs.getString('email');
@@ -189,6 +194,13 @@ Future<void> _fetchUserProfile() async {
       print(_fullNameController);
     }
   }
+}
+Future<void> _fetchFullName() async {
+  final prefs = await SharedPreferences.getInstance();
+  String? fullName = prefs.getString('full_name') ?? 'No name saved';
+  setState(() {
+    _fullName = fullName;
+  });
 }
 
 
@@ -294,8 +306,8 @@ Future<void> _fetchUserProfile() async {
                     backgroundColor: Colors.grey.shade300,
                   ),
                   SizedBox(height: screenHeight * 0.0075),
-                  const Text(
-                    'Harsh Pawar',
+                   Text(
+                    _fullName,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: screenHeight * 0.0075),

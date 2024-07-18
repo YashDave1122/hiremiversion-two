@@ -43,6 +43,11 @@ dependencies:
   hexcolor: ^3.0.1
   url_launcher: ^6.3.0
   google_fonts: ^6.2.1
+  uuid: ^4.4.2
+  paytm_routersdk: ^1.0.2
+  paytm_allinonesdk: ^1.2.6
+  carousel_slider: ^4.2.1
+
 
 dev_dependencies:
   flutter_test:

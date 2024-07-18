@@ -33,6 +33,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  carousel_slider:
+    dependency: "direct main"
+    description:
+      name: carousel_slider
+      sha256: "9c695cc963bf1d04a47bd6021f68befce8970bcd61d24938e1fb0918cf5d9c42"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.1"
   characters:
     dependency: transitive
     description:
@@ -113,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  fixnum:
+    dependency: transitive
+    description:
+      name: fixnum
+      sha256: "25517a4deb0c03aa0f32fd12db525856438902d9c16536311e76cdc57b31d7d1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -320,6 +336,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  paytm_allinonesdk:
+    dependency: "direct main"
+    description:
+      name: paytm_allinonesdk
+      sha256: "95eb3596ff3981172c2b0cbe4687bc6e2496da6e06e194729ae0f5c4fef91f34"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.6"
+  paytm_routersdk:
+    dependency: "direct main"
+    description:
+      name: paytm_routersdk
+      sha256: "4b018e5b5c415043569ecaa539e59574cff15edb24c480f62411aaf1746c106b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   percent_indicator:
     dependency: "direct main"
     description:
@@ -421,6 +453,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  sprintf:
+    dependency: transitive
+    description:
+      name: sprintf
+      sha256: "1fc9ffe69d4df602376b52949af107d8f5703b77cda567c4d7d86a0693120f23"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0"
   stack_trace:
     dependency: transitive
     description:
@@ -533,6 +573,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  uuid:
+    dependency: "direct main"
+    description:
+      name: uuid
+      sha256: "83d37c7ad7aaf9aa8e275490669535c8080377cfa7a7004c24dfac53afffaa90"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.2"
   vector_math:
     dependency: transitive
     description:

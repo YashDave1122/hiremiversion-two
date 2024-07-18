@@ -308,9 +308,10 @@ class OpportunityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       width: MediaQuery.of(context).size.width * 0.95,
-      height: MediaQuery.of(context).size.height * 0.219,
+      height: MediaQuery.of(context).size.height * 0.234,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -342,7 +343,7 @@ class OpportunityCard extends StatelessWidget {
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  const SizedBox(height: 12),
+                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                   Text(
                     companyName,
                     textAlign: TextAlign.start,
@@ -352,7 +353,8 @@ class OpportunityCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -364,7 +366,8 @@ class OpportunityCard extends StatelessWidget {
                   Text(location, style: const TextStyle(fontSize: 8)),
                 ],
               ),
-              const SizedBox(height: 5),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+
               Row(
                 children: [
                   const Icon(Icons.currency_rupee, color: Colors.grey, size: 8),
@@ -374,7 +377,8 @@ class OpportunityCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          //SizedBox(height: MediaQuery.of(context).size.height*0.01),
+
           Row(
             children: [
               buildDetailContainer(
@@ -386,61 +390,134 @@ class OpportunityCard extends StatelessWidget {
               buildDetailContainer(context, '$exp Year Exp',
                   const Color(0xFFED509B), const Color(0xFFFFE5EE)),
               const Spacer(),
-              ElevatedButton(
+              // ElevatedButton(
+              //   onPressed: () {
+              //    Navigator.of(context).push(
+              //       MaterialPageRoute(
+              //         builder: (ctx) => type == 'Job'
+              //             ? DetailedFresherJobs(
+              //           id: 0,
+              //           profile: profile,
+              //           location: location,
+              //           codeRequired: '',
+              //
+              //           code: 0,
+              //
+              //           companyName: companyName,
+              //           education: education,
+              //           skillsRequired: skillsRequired,
+              //           knowledgeStars: null,
+              //           whoCanApply: '',
+              //           description: description,
+              //           termsAndConditions: '',
+              //           ctc: double.parse(
+              //               ctc), // Convert to appropriate type if needed
+              //         )
+              //             : DetailedInternship(
+              //           id: 0,
+              //           profile: profile,
+              //           location: location,
+              //           codeRequired: '',
+              //           code: 0,
+              //           companyName: companyName,
+              //           education: education,
+              //           skillsRequired: skillsRequired,
+              //           knowledgeStars: null,
+              //           whoCanApply: '',
+              //           description: description,
+              //           termsAndConditions: '',
+              //           ctc: double.parse(
+              //               ctc), // Convert to appropriate type if needed
+              //         ),
+              //       ),
+              //    );
+              //   },
+              //   style: ButtonStyle(
+              //     foregroundColor:
+              //     MaterialStateProperty.all<Color>(Colors.white),
+              //     backgroundColor:
+              //     MaterialStateProperty.all<Color>(const Color(0xFFC1272D)),
+              //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              //       RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(8.0)),
+              //     ),
+              //   ),
+              //   child:
+              //   const Text('Apply Now >', style: TextStyle(fontSize: 10)),
+              // ),
+                 ElevatedButton(
                 onPressed: () {
-                 Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (ctx) => type == 'Job'
-                          ? DetailedFresherJobs(
-                        id: 0,
-                        profile: profile,
-                        location: location,
-                        codeRequired: '',
+                  if (!isVerified) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                              contentPadding: EdgeInsets.zero,
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              content: const CustomAlertbox());
+                        });
+                  }
+                  else{
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (ctx) => type == 'Job'
+                            ? DetailedFresherJobs(
+                          id: 0,
+                          profile: profile,
+                          location: location,
+                          codeRequired: '',
 
-                        code: 0,
+                          code: 0,
 
-                        companyName: companyName,
-                        education: education,
-                        skillsRequired: skillsRequired,
-                        knowledgeStars: null,
-                        whoCanApply: '',
-                        description: description,
-                        termsAndConditions: '',
-                        ctc: double.parse(
-                            ctc), // Convert to appropriate type if needed
-                      )
-                          : DetailedInternship(
-                        id: 0,
-                        profile: profile,
-                        location: location,
-                        codeRequired: '',
-                        code: 0,
-                        companyName: companyName,
-                        education: education,
-                        skillsRequired: skillsRequired,
-                        knowledgeStars: null,
-                        whoCanApply: '',
-                        description: description,
-                        termsAndConditions: '',
-                        ctc: double.parse(
-                            ctc), // Convert to appropriate type if needed
+                          companyName: companyName,
+                          education: education,
+                          skillsRequired: skillsRequired,
+                          knowledgeStars: null,
+                          whoCanApply: '',
+                          description: description,
+                          termsAndConditions: '',
+                          ctc: double.parse(
+                              ctc), // Convert to appropriate type if needed
+                        )
+                            : DetailedInternship(
+                          id: 0,
+                          profile: profile,
+                          location: location,
+                          codeRequired: '',
+                          code: 0,
+                          companyName: companyName,
+                          education: education,
+                          skillsRequired: skillsRequired,
+                          knowledgeStars: null,
+                          whoCanApply: '',
+                          description: description,
+                          termsAndConditions: '',
+                          ctc: double.parse(
+                              ctc), // Convert to appropriate type if needed
+                        ),
                       ),
-                    ),
-                 );
+                    );
+
+                  }
                 },
                 style: ButtonStyle(
-                  foregroundColor:
-                  MaterialStateProperty.all<Color>(Colors.white),
+                  foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
                   backgroundColor:
-                  MaterialStateProperty.all<Color>(const Color(0xFFC1272D)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      WidgetStateProperty.all<Color>(const Color(0xFFC1272D)),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
+                      borderRadius: BorderRadius.circular(8.0), // Border radius
+                    ),
                   ),
                 ),
-                child:
-                const Text('Apply Now >', style: TextStyle(fontSize: 10)),
-              ),
+                child: const Text(
+                  'Apply Now >',
+                  style: TextStyle(fontSize: 10),
+                ),
+              )
             ],
           ),
           const SizedBox(height: 6),

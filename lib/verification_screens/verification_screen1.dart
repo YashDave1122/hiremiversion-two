@@ -22,6 +22,7 @@ final _formKey = GlobalKey<FormState>();
   String? _selectedState;
   DateTime? _selectedDate;
 String _userId="";
+String _fullName="";
 
   // List<String> _states = ['State 1', 'State 2', 'State 3', 'State 4'];
 
@@ -109,6 +110,9 @@ String _userId="";
 void initState() {
   super.initState();
   _fetchUserData();
+  if (_fullName.isEmpty) {
+    _fetchFullName();
+  }
 }
 Future<void> _fetchUserData() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -149,6 +153,13 @@ Future<void> _fetchUserData() async {
   } else {
     print('No email stored');
   }
+}
+Future<void> _fetchFullName() async {
+  final prefs = await SharedPreferences.getInstance();
+  String? fullName = prefs.getString('full_name') ?? 'No name saved';
+  setState(() {
+    _fullName = fullName;
+  });
 }
 Future<void> _updateUserData() async {
   if (!_isAllFieldsValid()) return;
@@ -227,8 +238,8 @@ Future<void> _updateUserData() async {
                     backgroundColor: Colors.grey.shade300,
                   ),
                   SizedBox(height: screenHeight * 0.0075),
-                  const Text(
-                    'Harsh Pawar',
+                   Text(
+                    _fullName,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: screenHeight * 0.0075),

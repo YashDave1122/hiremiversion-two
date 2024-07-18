@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:hiremi_version_two/Utils/AppSizes.dart';
+
+import '../../../../Utils/AppSizes.dart';
+import '../../../../Utils/colors.dart';
+
 
 class SkillRequiredFresher extends StatelessWidget {
+  const SkillRequiredFresher({Key? key, required this.skillsRequired}) : super(key: key);
   final String skillsRequired;
-
-  const SkillRequiredFresher({
-    Key? key,
-    required this.skillsRequired,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Skills Required',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
+        Text('Skill Required',
+            style: TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary)),
         SizedBox(
-          height: Sizes.responsiveSm(context),
+          height: Sizes.responsiveMd(context),
         ),
         Text(
           skillsRequired,

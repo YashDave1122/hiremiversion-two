@@ -1,14 +1,71 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/verify.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class VerificationStatus extends StatelessWidget {
+class VerificationStatus extends StatefulWidget {
   const VerificationStatus({Key? key, required this.percent}) : super(key: key);
   final double percent;
 
   @override
+  State<VerificationStatus> createState() => _VerificationStatusState();
+}
+
+class _VerificationStatusState extends State<VerificationStatus> {
+
+  String FullName="";
+  String storedEmail="";
+  @override
+  void initState() {
+    super.initState();
+    // _scrollController.addListener(_onScroll);
+
+    fetchAndSaveFullName();
+    _printSavedEmail();
+  }
+  Future<void> _printSavedEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString('email') ?? 'No email saved';
+    print(email);
+    storedEmail=email;
+  }
+  Future<void> fetchAndSaveFullName() async {
+    const String apiUrl = "http://13.127.81.177:8000/api/registers/";
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final prefs = await SharedPreferences.getInstance();
+        storedEmail = prefs.getString('email') ?? 'No email saved';
+
+        for (var user in data) {
+          if (user['email'] == storedEmail) {
+            setState(() {
+              FullName = user['full_name'] ?? 'No name saved';
+            });
+            await prefs.setString('full_name', FullName);
+            print('Full name saved: $FullName');
+            break;
+          }
+        }
+
+        if (FullName.isEmpty) {
+          print('No matching email found');
+        }
+      } else {
+        print('Failed to fetch full name');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+  @override
   Widget build(BuildContext context) {
-    double percentage = percent*100;
+    double percentage = widget.percent*100;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Container(
@@ -58,7 +115,7 @@ class VerificationStatus extends StatelessWidget {
                             0.05, // Adjusted based on screen height
                         lineWidth: screenHeight *
                             0.0075, // Adjusted based on screen height
-                        percent: percent,
+                        percent: widget.percent,
                         center: Text(
                           '$percentage%',
                           style: TextStyle(
@@ -151,7 +208,7 @@ class VerificationStatus extends StatelessWidget {
                                       0.05, // Adjusted based on screen width
                                   height: screenHeight *
                                       0.003, // Adjusted based on screen height
-                                  color: percent>=0.50? Colors.green:Colors.white,
+                                  color: widget.percent>=0.50? Colors.green:Colors.white,
                                 ),
                                 SizedBox(
                                   height: screenHeight *
@@ -167,16 +224,21 @@ class VerificationStatus extends StatelessWidget {
                                   height: screenWidth *
                                       0.07, // Adjusted based on screen width
                                   decoration: BoxDecoration(
-                                    color: percent>=0.50? Colors.green:Colors.white,
+                                    color: widget.percent>=0.50? Colors.green:Colors.white,
                                     borderRadius: BorderRadius.circular(
                                         screenWidth *
                                             0.035), // Adjusted based on screen width
                                   ),
-                                  child: Icon(
-                                    Icons.call,
-                                    color: percent>=0.50? Colors.white: const Color(0xFFC1272D),
-                                    size: screenWidth *
-                                        0.03, // Adjusted based on screen width
+                                  child: InkWell(
+                                    onTap: (){
+
+                                    },
+                                    child: Icon(
+                                      Icons.call,
+                                      color: widget.percent>=0.50? Colors.white: const Color(0xFFC1272D),
+                                      size: screenWidth *
+                                          0.03, // Adjusted based on screen width
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
@@ -201,7 +263,7 @@ class VerificationStatus extends StatelessWidget {
                                       0.05, // Adjusted based on screen width
                                   height: screenHeight *
                                       0.003, // Adjusted based on screen height
-                                  color: percent>=0.50? Colors.green:Colors.white,
+                                  color: widget.percent>=0.50? Colors.green:Colors.white,
                                 ),
                                 SizedBox(
                                   height: screenHeight *
@@ -216,7 +278,7 @@ class VerificationStatus extends StatelessWidget {
                                       0.05, // Adjusted based on screen width
                                   height: screenHeight *
                                       0.003, // Adjusted based on screen height
-                                  color:percent>=0.75? Colors.green:Colors.white,
+                                  color:widget.percent>=0.75? Colors.green:Colors.white,
                                 ),
                                 SizedBox(
                                   height: screenHeight *
@@ -232,14 +294,14 @@ class VerificationStatus extends StatelessWidget {
                                   height: screenWidth *
                                       0.07, // Adjusted based on screen width
                                   decoration: BoxDecoration(
-                                    color: percent>=0.75? Colors.green:Colors.white,
+                                    color: widget.percent>=0.75? Colors.green:Colors.white,
                                     borderRadius: BorderRadius.circular(
                                         screenWidth *
                                             0.035), // Adjusted based on screen width
                                   ),
                                   child: Icon(
                                     Icons.school,
-                                    color: percent>=0.75? Colors.white: const Color(0xFFC1272D),
+                                    color: widget.percent>=0.75? Colors.white: const Color(0xFFC1272D),
                                     size: screenWidth *
                                         0.03, // Adjusted based on screen width
                                   ),
@@ -266,7 +328,7 @@ class VerificationStatus extends StatelessWidget {
                                       0.05, // Adjusted based on screen width
                                   height: screenHeight *
                                       0.003, // Adjusted based on screen height
-                                  color: percent>=0.75? Colors.green:Colors.white,
+                                  color: widget.percent>=0.75? Colors.green:Colors.white,
                                 ),
                                 SizedBox(
                                   height: screenHeight *
@@ -281,7 +343,7 @@ class VerificationStatus extends StatelessWidget {
                                       0.05, // Adjusted based on screen width
                                   height: screenHeight *
                                       0.003, // Adjusted based on screen height
-                                  color:percent>=1? Colors.green:Colors.white,
+                                  color:widget.percent>=1? Colors.green:Colors.white,
                                 ),
                                 SizedBox(
                                   height: screenHeight *
@@ -297,14 +359,14 @@ class VerificationStatus extends StatelessWidget {
                                   height: screenWidth *
                                       0.07, // Adjusted based on screen width
                                   decoration: BoxDecoration(
-                                    color: percent>=1? Colors.green:Colors.white,
+                                    color: widget.percent>=1? Colors.green:Colors.white,
                                     borderRadius: BorderRadius.circular(
                                         screenWidth *
                                             0.035), // Adjusted based on screen width
                                   ),
                                   child: Icon(
                                     Icons.account_balance,
-                                    color: percent>=1? Colors.white: const Color(0xFFC1272D),
+                                    color: widget.percent>=1? Colors.white: const Color(0xFFC1272D),
                                     size: screenWidth *
                                         0.03, // Adjusted based on screen width
                                   ),
@@ -349,7 +411,7 @@ class VerificationStatus extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          'Harsh Pawar',
+                          FullName,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: screenWidth *

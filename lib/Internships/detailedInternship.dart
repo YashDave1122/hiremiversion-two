@@ -50,7 +50,7 @@ class _DetailedInternshipState extends State<DetailedInternship> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Internship Jobs'),
+
         actions: [
           IconButton(
             onPressed: () {

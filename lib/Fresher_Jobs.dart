@@ -21,17 +21,17 @@ class _FresherJobsScreenState extends State<FresherJobsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Fresher Jobs'),
           actions: [
             IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                   MaterialPageRoute(builder: (ctx) => const NotificationScreen()));
-              },
-              icon: const Icon(Icons.notifications))
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => const NotificationScreen()));
+                },
+                icon: const Icon(Icons.notifications))
           ],
         ),
         body: SingleChildScrollView(

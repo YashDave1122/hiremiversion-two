@@ -334,8 +334,12 @@
 //     );
 //   }
 // }
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:hiremi_version_two/paytmPayment.dart';
 import 'package:hiremi_version_two/verified_page.dart';
+import 'package:paytm_routersdk/paytm_routersdk.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -348,6 +352,9 @@ class VerificationScreen3 extends StatefulWidget {
 
 class _VerificationScreen3State extends State<VerificationScreen3> {
   final _formKey = GlobalKey<FormState>();
+  String _fullName="";
+  double amount=1;
+  String Email="";
 
   final TextEditingController _IntrestedDomainController = TextEditingController();
   final TextEditingController _EnrollementNumberController = TextEditingController();
@@ -358,17 +365,201 @@ class _VerificationScreen3State extends State<VerificationScreen3> {
     _EnrollementNumberController.dispose();
     super.dispose();
   }
-
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (_fullName.isEmpty) {
+      _fetchFullName();
+    }
+    if (Email.isEmpty) {
+      _printSavedEmail();
+    }
+  }
   bool _isAllFieldsValid() {
     return _formKey.currentState?.validate() ?? false;
   }
 
-  Future<void> _saveFormDetails() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('enrollmentNumber', _EnrollementNumberController.text);
-    await prefs.setString('interestedDomain', _IntrestedDomainController.text);
+
+  Future<void> _printSavedEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString('email') ?? 'No email saved';
+    print(email);
+    Email=email;
+  }
+  Future<void> _fetchFullName() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? fullName = prefs.getString('full_name') ?? 'No name saved';
+    setState(() {
+      _fullName = fullName;
+    });
+  }
+  Future<Map?> _initiateTransaction(String txnToken, String orderId, String amount, String mid, String callbackUrl, bool isStaging) async {
+    try {
+      // Initiate the transaction using Paytm Router SDK
+      var transactionResponse = await PaytmRouterSdk.startTransaction(mid, orderId, amount, txnToken, callbackUrl, isStaging);
+
+      // Handle the transaction response
+
+      if (transactionResponse != null && transactionResponse['STATUS'] == 'TXN_SUCCESS') {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (ctx) => const VerifiedPage()));
+        print("Success");
+        checkOrderStatus(orderId);
+
+
+        return transactionResponse;
+      } else {
+        checkOrderStatus(orderId);
+        throw Exception('Transaction failed: ${transactionResponse!['RESPMSG']}');
+      }
+    } catch (e) {
+      // Error occurred during transaction initiation
+      throw Exception('Error initiating transaction: $e');
+    }
   }
 
+  Future<void> _printSavedValues() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? enrollmentNumber = prefs.getString('enrollmentNumber');
+    String? interestedDomain = prefs.getString('interestedDomain');
+    print('Enrollment Number: $enrollmentNumber');
+    print('Interested Domain: $interestedDomain');
+  }
+  final String orderStatusUrl = 'http://13.127.81.177:8000/order-status/';
+  Future<void> checkOrderStatus(String orderId) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$orderStatusUrl'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"order_id": orderId}),
+      );
+
+      if (response.statusCode == 200) {
+        print("Order is complete");
+        print(response.statusCode);
+        print(response.body);
+      } else {
+        print("Order is not complete");
+        print(response.statusCode);
+        print(response.body);
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+  Future<void> _makeTransactionRequest(double amount) async {
+
+    try {
+      print("Helllo");
+      // Ensure email is loaded
+
+
+
+      // API endpoint
+      var url = 'http://13.127.81.177:8000/pay/';
+
+      // Generate a unique order ID
+      var orderId = DateTime.now().millisecondsSinceEpoch.toString();
+
+      // Parameters
+      var params = {
+        'name': _fullName,
+        'amount': amount.toString(),
+        'orderId': orderId,
+        'email': "yashmanu0761@gmail.com" // Add email to the parameters
+      };
+
+      var response = await http.post(
+        Uri.parse(url),
+        body: json.encode(params),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      // Checking response status
+      if (response.statusCode == 200) {
+        var responseData = json.decode(response.body);
+        print('Response data: $responseData'); // Print response data for debugging
+
+        // Check if all required fields are present in the response
+        if (responseData.containsKey('txnToken') && responseData.containsKey('orderId') && responseData.containsKey('amount')) {
+          var txnToken = responseData['txnToken'];
+          var orderId = responseData['orderId'];
+          var amount = responseData['amount'];
+          var mid = '216820000000000077910';
+          var callbackUrll = 'http://13.127.81.177:8000/callback/';
+          var isStaging = false; // Set to true for staging environment
+
+          // Use router SDK to initiate transaction
+          var transactionResponse = await _initiateTransaction(txnToken, orderId, amount, mid, callbackUrll, isStaging);
+
+          // Check if transactionResponse is not null and contains 'TXNID'
+          if (transactionResponse != null && transactionResponse.containsKey('TXNID')) {
+            print("Helloin if section");
+            var txnDetails = {
+              'BANKTXNID': transactionResponse['BANKTXNID'],
+              'CHECKSUMHASH': transactionResponse['CHECKSUMHASH'],
+              'CURRENCY': transactionResponse['CURRENCY'],
+              'GATEWAYNAME': transactionResponse['GATEWAYNAME'],
+              'MID': transactionResponse['MID'],
+              'ORDERID': transactionResponse['ORDERID'],
+              'PAYMENTMODE': transactionResponse['PAYMENTMODE'],
+              'RESPCODE': transactionResponse['RESPCODE'],
+              'RESPMSG': transactionResponse['RESPMSG'],
+              'STATUS': transactionResponse['STATUS'],
+              'TXNAMOUNT': transactionResponse['TXNAMOUNT'],
+              'TXNDATE': transactionResponse['TXNDATE'],
+              'TXNID': transactionResponse['TXNID']
+            };
+
+           print('Transaction successful! Transaction ID: ${transactionResponse['TXNID']}');
+
+            // Post transaction response to callback URL
+            await _postTransactionResponse(callbackUrll, txnDetails);
+          } else {
+           print('Error: Transaction failed or missing transaction ID in response');
+          }
+        } else {
+         print('Error: Missing required data in response');
+        }
+      } else {
+        // Request failed
+        print(response.statusCode);
+        print(response.body);
+       print( 'Request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Error occurred
+      print( 'Error: $e');
+    }
+  }
+  Future<void> _postTransactionResponse(String callbackUrll, Map<String, dynamic> response) async {
+    try {
+      // Making POST request to callback URL with transaction response data
+      var callbackResponse = await http.post(
+        Uri.parse(callbackUrll),
+        body: json.encode(response),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      // Checking response status
+      if (callbackResponse.statusCode == 200) {
+
+        print('Transaction response posted successfully');
+        print(callbackResponse.statusCode);
+        print(callbackResponse.body);
+        // console.log(callbackResponse.body);
+
+        // Redirect to CallbackScreen
+
+      } else {
+        print('Failed to post transaction response. Status code: ${callbackResponse.statusCode}');
+      }
+    } catch (e) {
+      // Error occurred while posting transaction response
+      print('Error posting transaction response: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
@@ -401,8 +592,8 @@ class _VerificationScreen3State extends State<VerificationScreen3> {
                     backgroundColor: Colors.grey.shade300,
                   ),
                   SizedBox(height: screenHeight * 0.0075),
-                  const Text(
-                    'Harsh Pawar',
+                  Text(
+                    _fullName,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: screenHeight * 0.0075),
@@ -498,9 +689,10 @@ class _VerificationScreen3State extends State<VerificationScreen3> {
                           child: TextButton(
                             onPressed: () {
                               if (_isAllFieldsValid()) {
-                                _saveFormDetails();
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (ctx) => const VerifiedPage()));
+                                //_saveFormDetails();
+                                _makeTransactionRequest(amount);
+
+
                               } else {
                                 setState(() {});
                               }
