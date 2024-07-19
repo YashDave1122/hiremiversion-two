@@ -11,28 +11,10 @@ class QueriesScreen extends StatefulWidget {
 
 class _QueriesScreenState extends State<QueriesScreen> {
   @override
-  void initState() {
-    super.initState();
-    if (!widget.isVerified) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showVerificationDialog();
-      });
-    }
-  }
 
-  void _showVerificationDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            contentPadding: EdgeInsets.zero,
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            content: const CustomAlertbox());
-      },
-    );
+void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
   @override
@@ -152,48 +134,7 @@ class _QueriesScreenState extends State<QueriesScreen> {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.01),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                    child: RichText(
-                      text: const TextSpan(
-                        text: 'Date of Birth', // First part of the text
-                        style: TextStyle(
-                          color: Colors.black, // Style for the first part
-                          fontSize: 12.0, // Adjusted font size
-                        ),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: ' *', // Second part of the text
-                            style: TextStyle(
-                              color: Colors.red, // Style for the second part
-                              fontSize: 12.0, // Adjusted font size
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.005),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 2.0, 10.0, 0),
-                    child: TextFormField(
-                      style:
-                          const TextStyle(fontSize: 12.0), // Adjusted font size
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(
-                          Icons.calendar_today,
-                          color: Colors.green,
-                        ),
-                        hintText: 'Date of Birth',
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                            horizontal: 8.0), // Adjust padding here
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    ),
-                  ),
+
                   SizedBox(height: screenHeight * 0.01),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),

@@ -4,19 +4,19 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/API_Integration/Internship/Apiservices.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:hiremi_version_two/Custom_Widget/Circle_row.dart';
+
 import 'dart:ui'; // For BackdropFilter
-import 'package:hiremi_version_two/Custom_Widget/Container_with_curved_Edges.dart';
+
 import 'package:hiremi_version_two/Custom_Widget/OppurtunityCard.dart';
-import 'package:hiremi_version_two/Custom_Widget/SliderPageRoute.dart';
+
 import 'package:hiremi_version_two/Custom_Widget/Verifiedtrue.dart';
 import 'package:hiremi_version_two/Custom_Widget/banners.dart';
 import 'package:hiremi_version_two/Custom_Widget/drawer_child.dart';
 import 'package:hiremi_version_two/Custom_Widget/verification_status.dart';
-import 'package:hiremi_version_two/Fresher_Jobs.dart';
+
 import 'package:hiremi_version_two/InternshipScreen.dart';
 import 'package:hiremi_version_two/Notofication_screen.dart';
-import 'package:hiremi_version_two/Utils/AppSizes.dart';
+
 import 'package:hiremi_version_two/Utils/colors.dart';
 import 'package:hiremi_version_two/experienced_jobs.dart';
 import 'package:hiremi_version_two/fresherJobs.dart';

@@ -404,7 +404,8 @@ class _VerificationScreen3State extends State<VerificationScreen3> {
       if (transactionResponse != null && transactionResponse['STATUS'] == 'TXN_SUCCESS') {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (ctx) => const VerifiedPage()));
-        print("Success");
+        // print("Success");
+        print("transaction Succesfully");
         checkOrderStatus(orderId);
 
 
@@ -436,6 +437,8 @@ class _VerificationScreen3State extends State<VerificationScreen3> {
       );
 
       if (response.statusCode == 200) {
+
+        print("Success");
         print("Order is complete");
         print(response.statusCode);
         print(response.body);

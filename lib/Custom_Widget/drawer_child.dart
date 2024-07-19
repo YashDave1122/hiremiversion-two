@@ -5,10 +5,32 @@ import 'package:hiremi_version_two/Settings.dart';
 import 'package:hiremi_version_two/about_us.dart';
 
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class DrawerChild extends StatelessWidget {
+class DrawerChild extends StatefulWidget {
   const DrawerChild({Key? key}) : super(key: key);
 
+  @override
+  State<DrawerChild> createState() => _DrawerChildState();
+}
+
+class _DrawerChildState extends State<DrawerChild> {
+  String _fullName="";
+  Future<void> _fetchFullName() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? fullName = prefs.getString('full_name') ?? 'No name saved';
+    setState(() {
+      _fullName = fullName;
+    });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (_fullName.isEmpty) {
+      _fetchFullName();
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -38,7 +60,7 @@ class DrawerChild extends StatelessWidget {
                     ),
                     SizedBox(height: screenHeight * 0.01),
                     Text(
-                      'Harsh Pawar',
+                      _fullName,
                       style: TextStyle(
                           fontSize: screenWidth * 0.04,
                           fontWeight: FontWeight.bold),
