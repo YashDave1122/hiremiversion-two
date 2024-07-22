@@ -467,12 +467,12 @@ class _VerifiedPageState extends State<VerifiedPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const NewNavbar(isV: true)),
-                          (Route<dynamic> route) => false,
-                    );
+                    // Navigator.pushAndRemoveUntil(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => const NewNavbar(isV: true)),
+                    //       (Route<dynamic> route) => false,
+                    // );
                   },
                   style: ButtonStyle(
                     foregroundColor:

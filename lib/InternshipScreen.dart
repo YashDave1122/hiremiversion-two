@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/API_Integration/Internship/Apiservices.dart';
 import 'package:hiremi_version_two/Custom_Widget/OppurtunityCard.dart';
-
-
+import 'package:hiremi_version_two/HomePage.dart';
 import 'package:hiremi_version_two/Notofication_screen.dart';
 
 class InternshipsScreen extends StatefulWidget {
@@ -24,6 +23,17 @@ class _InternshipsScreenState extends State<InternshipsScreen> {
     final apiService = ApiService('http://13.127.81.177:8000/api/internship/');
     futureJobs = apiService.fetchData();
   }
+  Future<bool> _onWillPop() async {
+    // You can perform any action you want here before popping the route
+    // For example, navigate to a specific screen:
+    print("Hello");
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const HomePage(isVerified: true)),
+    );
+    // Return false to prevent the default popping behavior
+    return false;
+  }
+
 
   @override
   // Widget build(BuildContext context) {
@@ -209,138 +219,141 @@ class _InternshipsScreenState extends State<InternshipsScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Internship Jobs',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Internship Joobs',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (ctx) => const NotificationScreen()));
+                },
+                icon: const Icon(Icons.notifications))
+          ],
         ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => const NotificationScreen()));
-              },
-              icon: const Icon(Icons.notifications))
-        ],
-      ),
-      body: FutureBuilder<List<dynamic>>(
-        future: futureJobs,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No jobs available'));
-          } else {
-            final jobs = snapshot.data!;
-            return SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(screenWidth * 0.04), // 4% of screen width
-                child: Center(
-                  child: Column(
-                    children: [
-                      Container(
-                        width: screenWidth * 0.95, // 95% of screen width
-                        height: screenHeight * 0.1, // 10% of screen height
-                        decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFFFC3E41), Color(0xFFFF6E01)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(8)),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: screenWidth * 0.04, // 4% of screen width
-                            ),
-                            Container(
-                              width: screenWidth * 0.08, // 8% of screen width
-                              height: screenWidth * 0.08, // 8% of screen width
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
+        body: FutureBuilder<List<dynamic>>(
+          future: futureJobs,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No jobs available'));
+            } else {
+              final jobs = snapshot.data!;
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(screenWidth * 0.04), // 4% of screen width
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Container(
+                          width: screenWidth * 0.95, // 95% of screen width
+                          height: screenHeight * 0.1, // 10% of screen height
+                          decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFFFC3E41), Color(0xFFFF6E01)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
-                              child: Icon(
-                                Icons.work,
-                                size: screenWidth * 0.04, // 4% of screen width
-                                color: const Color(0xFFFF3E41),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: screenWidth * 0.04, // 4% of screen width
                               ),
-                            ),
-                            SizedBox(
-                              width: screenWidth * 0.02, // 2% of screen width
-                            ),
-                            Text(
-                              'Internship Jobs',
-                              style: TextStyle(
-                                  fontSize: screenWidth * 0.045, // 4.5% of screen width
-                                  color: Colors.white),
-                            ),
-                            const Spacer(),
-                            Container(
-                              width: screenWidth * 0.23, // 23% of screen width
-                              height: screenWidth * 0.23, // 23% of screen width
-                              decoration: BoxDecoration(
-                                color: Colors.red[100],
-                                shape: BoxShape.circle,
+                              Container(
+                                width: screenWidth * 0.08, // 8% of screen width
+                                height: screenWidth * 0.08, // 8% of screen width
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                child: Icon(
+                                  Icons.work,
+                                  size: screenWidth * 0.04, // 4% of screen width
+                                  color: const Color(0xFFFF3E41),
+                                ),
                               ),
-                              child: Icon(
-                                Icons.work,
-                                color: const Color(0xFFFF3E41),
-                                size: screenWidth * 0.1, // 10% of screen width
+                              SizedBox(
+                                width: screenWidth * 0.02, // 2% of screen width
                               ),
-                            ),
-                          ],
+                              Text(
+                                'Internship Jobs',
+                                style: TextStyle(
+                                    fontSize: screenWidth * 0.045, // 4.5% of screen width
+                                    color: Colors.white),
+                              ),
+                              const Spacer(),
+                              Container(
+                                width: screenWidth * 0.23, // 23% of screen width
+                                height: screenWidth * 0.23, // 23% of screen width
+                                decoration: BoxDecoration(
+                                  color: Colors.red[100],
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.work,
+                                  color: const Color(0xFFFF3E41),
+                                  size: screenWidth * 0.1, // 10% of screen width
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: screenHeight * 0.03, // 3% of screen height
-                      ),
-                      const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Available Internship Jobs',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.left,
-                          )),
-                      SizedBox(
-                        height: screenHeight * 0.03, // 3% of screen height
-                      ),
-                      Column(
-                        children: jobs.map((job) {
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: screenHeight * 0.03),
-                            child: OpportunityCard(
-                                dp: Image.asset('images/icons/logo1.png'), // Placeholder image
-                                profile: job['profile'] ?? 'N/A',
-                                companyName: job['company_name'] ?? 'N/A',
-                                location: job['location'] ?? 'N/A',
-                                stipend: job['Stipend']?.toString() ?? 'N/A',
-                                mode: 'Remote', // Replace with actual data if available
-                                type: 'Job', // Replace with actual data if available
-                                exp: 1, // Replace with actual data if available
-                                daysPosted: 0, // Replace with actual data if available
-                                isVerified: widget.isVerified,
-                                ctc: job['Stipend']?.toString() ?? '0', // Example, replace with actual field
-                                description: job['description'] ?? 'No description available',
-                                education: job['education'],
-                                skillsRequired: job['skills_required'],
-                                whoCanApply: job['who_can_apply'],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
+                        SizedBox(
+                          height: screenHeight * 0.03, // 3% of screen height
+                        ),
+                        const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Available Internship Jobs',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.left,
+                            )),
+                        SizedBox(
+                          height: screenHeight * 0.03, // 3% of screen height
+                        ),
+                        Column(
+                          children: jobs.map((job) {
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: screenHeight * 0.03),
+                              child: OpportunityCard(
+                                  dp: Image.asset('images/icons/logo1.png'), // Placeholder image
+                                  profile: job['profile'] ?? 'N/A',
+                                  companyName: job['company_name'] ?? 'N/A',
+                                  location: job['location'] ?? 'N/A',
+                                  stipend: job['Stipend']?.toString() ?? 'N/A',
+                                  mode: 'Remote', // Replace with actual data if available
+                                  type: 'Job', // Replace with actual data if available
+                                  exp: 1, // Replace with actual data if available
+                                  daysPosted: 0, // Replace with actual data if available
+                                  isVerified: widget.isVerified,
+                                  ctc: job['Stipend']?.toString() ?? '0', // Example, replace with actual field
+                                  description: job['description'] ?? 'No description available',
+                                  education: job['education'],
+                                  skillsRequired: job['skills_required'],
+                                  whoCanApply: job['who_can_apply'],
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          }
-        },
+              );
+            }
+          },
+        ),
       ),
     );
   }

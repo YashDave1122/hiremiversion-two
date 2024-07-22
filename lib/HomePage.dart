@@ -1,28 +1,21 @@
 
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/API_Integration/Internship/Apiservices.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
 import 'dart:ui'; // For BackdropFilter
-
 import 'package:hiremi_version_two/Custom_Widget/OppurtunityCard.dart';
-
 import 'package:hiremi_version_two/Custom_Widget/Verifiedtrue.dart';
 import 'package:hiremi_version_two/Custom_Widget/banners.dart';
 import 'package:hiremi_version_two/Custom_Widget/drawer_child.dart';
 import 'package:hiremi_version_two/Custom_Widget/verification_status.dart';
-
 import 'package:hiremi_version_two/InternshipScreen.dart';
 import 'package:hiremi_version_two/Notofication_screen.dart';
-
 import 'package:hiremi_version_two/Utils/colors.dart';
+import 'package:hiremi_version_two/bottomnavigationbar.dart';
 import 'package:hiremi_version_two/experienced_jobs.dart';
 import 'package:hiremi_version_two/fresherJobs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
 import 'package:http/http.dart' as http;
 
 
@@ -42,7 +35,7 @@ class _HomePageState extends State<HomePage> {
   List<dynamic> _jobs = [];
   bool _isLoading = true;
   String FullName = "";
-  String storedEmail='';
+  String storedEmail = '';
 
   final ScrollController _scrollController = ScrollController();
 
@@ -52,7 +45,6 @@ class _HomePageState extends State<HomePage> {
     _scrollController.addListener(_onScroll);
     _fetchJobs();
     fetchAndSaveFullName();
-
   }
 
   @override
@@ -83,10 +75,6 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
-
-
-
-
 
   Future<void> fetchAndSaveFullName() async {
     const String apiUrl = "http://13.127.81.177:8000/api/registers/";
@@ -120,6 +108,7 @@ class _HomePageState extends State<HomePage> {
       print('Error: $e');
     }
   }
+
   Future<void> _chechVerified() async {
     const String apiUrl = "http://13.127.81.177:8000/api/registers/";
 
@@ -152,11 +141,23 @@ class _HomePageState extends State<HomePage> {
       print('Error: $e');
     }
   }
+
   Future<void> _printSavedEmail() async {
     final prefs = await SharedPreferences.getInstance();
     final email = prefs.getString('email') ?? 'No email saved';
-    storedEmail=email;
+    storedEmail = email;
     print(email);
+  }
+
+  Future<bool> _onWillPop() async {
+    // Navigate back to the NewNavbar page
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    return false; // Prevent the default back behavior
+  }
+
+  void _navigateToPage(Widget page) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+    print("Hello i am in _navigateToPage");
   }
 
   @override
@@ -184,11 +185,12 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      drawer: const Drawer(
+      drawer:  Drawer(
         backgroundColor: Colors.white,
-        child: DrawerChild(),
+        child: DrawerChild(isVerified: widget.isVerified,),
       ),
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: Padding(
           padding: EdgeInsets.all(screenWidth * 0.04),
           child: Column(
@@ -205,7 +207,6 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   SizedBox(height: screenHeight * 0.02),
-
                   Column(
                     children: [
                       CarouselSlider(
@@ -253,7 +254,6 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   SizedBox(height: screenHeight * 0.02),
-                  // const CircleRow(),
                 ],
               ),
               SizedBox(height: screenHeight * 0.02),
@@ -275,9 +275,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: TextButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => InternshipsScreen(isVerified: widget.isVerified),
-                        ));
+                        _navigateToPage(InternshipsScreen(isVerified: widget.isVerified));
                       },
                       child: Row(
                         children: [

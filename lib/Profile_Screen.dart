@@ -63,9 +63,9 @@ class ProfileScreen extends StatelessWidget {
               icon: const Icon(Icons.notifications))
         ],
       ),
-      drawer: const Drawer(
-        child: DrawerChild(),
-      ),
+      // drawer:  Drawer(
+      //   child: DrawerChild(isVerified: widget.isVerified,),
+      // ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(

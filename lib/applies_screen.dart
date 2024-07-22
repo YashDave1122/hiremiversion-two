@@ -36,8 +36,8 @@ class _AppliesScreenState extends State<AppliesScreen> {
           ),
         ],
       ),
-      drawer: const Drawer(
-        child: DrawerChild(),
+      drawer:  Drawer(
+        child: DrawerChild(isVerified: widget.isVerified,),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

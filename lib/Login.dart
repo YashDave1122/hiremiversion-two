@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/Custom_Widget/Curved_Container.dart';
 import 'package:hiremi_version_two/Custom_Widget/Elevated_Button.dart';
 import 'package:hiremi_version_two/Custom_Widget/SliderPageRoute.dart';
+import 'package:hiremi_version_two/HomePage.dart';
 import 'package:hiremi_version_two/bottomnavigationbar.dart';
 import 'package:hiremi_version_two/Forget_Your_Password.dart';
 import 'package:hiremi_version_two/Register.dart';
@@ -24,6 +25,8 @@ class _LogInState extends State<LogIn> {
   bool _isObscure = true;
   String? _savedEmail;
   bool isV = false;
+  late int id;
+  late int ID;
 
 
   Future<String?> _printSavedEmail() async {
@@ -31,8 +34,10 @@ class _LogInState extends State<LogIn> {
     // final email = prefs.getString('email') ?? 'No email saved';
     // print("email saved is $email");
     final prefs = await SharedPreferences.getInstance();
+    final id=await SharedPreferences.getInstance();
     setState(() {
       _savedEmail = prefs.getString('email') ?? 'No email saved';
+
     });
 
     print("Saved email is $_savedEmail");
@@ -48,6 +53,8 @@ class _LogInState extends State<LogIn> {
       final List<dynamic> users = jsonDecode(response.body);
       for (var user in users) {
         if (user['email'] == _savedEmail && user['verified'] == true) {
+          id=user['id'];
+
           print("Verified is true");
           Navigator.push(
             context,
@@ -64,6 +71,15 @@ class _LogInState extends State<LogIn> {
     return false;
   }
 
+  Future<void> _retrieveId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final int? savedId = prefs.getInt('userId');
+    if (savedId != null) {
+      print("Retrieved id is $savedId");
+    } else {
+      print("No id found in SharedPreferences");
+    }
+  }
 
 
   Future<void> _login() async {
@@ -86,8 +102,13 @@ class _LogInState extends State<LogIn> {
       // Login successful
       print("Login successful");
       _printSavedEmail();
+
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('email', _emailController.text);
+      await prefs.setInt('userId', id);
+      _retrieveId();
+
+      //final prefs = await SharedPreferences.getInstance();
+      //await prefs.setString('email', _emailController.text);
 
 
 
@@ -181,46 +202,7 @@ class _LogInState extends State<LogIn> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: MediaQuery.of(context).size.height * 0.0185),
-                      // Padding(
-                      //   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
-                      //   child: RichText(
-                      //     text: TextSpan(
-                      //       children: [
-                      //         TextSpan(
-                      //           text: "Email Address",
-                      //           style: TextStyle(
-                      //             color: Colors.black,
-                      //           ),
-                      //         ),
-                      //         TextSpan(
-                      //           text: " *",
-                      //           style: TextStyle(color: Colors.red,), // Red asterisk
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      //  SizedBox(height: MediaQuery.of(context).size.height * 0.0215),
 
-                      // Padding(
-                      //   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
-                      //   child: CurvedTextField(
-                      //     controller: _emailController,
-                      //     hintText: "youremail@gmail.com",
-                      //     prefixIcon: Icons.account_circle,
-                      //     obscureText: false,
-                      //     validator: (value) {
-                      //       if (value == null || value.isEmpty) {
-                      //        return 'Please enter your email';
-                      //        // print("Please enter your email");
-                      //       }
-                      //       if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      //         return 'Please enter a valid email address';
-                      //       }
-                      //       return null;
-                      //     },
-                      //   ),
-                      // ),
                       buildLabeledTextField(
                         context,
                         "Email Address",
@@ -240,87 +222,6 @@ class _LogInState extends State<LogIn> {
 
 
 
-                      // SizedBox(height: MediaQuery.of(context).size.height * 0.0075),
-                      // Padding(
-                      //   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
-                      //   child: RichText(
-                      //     text: TextSpan(
-                      //       children: [
-                      //         TextSpan(
-                      //           text: "Password",
-                      //           style: TextStyle(
-                      //             color: Colors.black,
-                      //           ),
-                      //         ),
-                      //         TextSpan(
-                      //           text: " *",
-                      //           style: TextStyle(color: Colors.red), // Red asterisk
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      // SizedBox(height: MediaQuery.of(context).size.height * 0.0205),
-                      // Padding(
-                      //   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
-                      //   child: CurvedTextField(
-                      //     controller: _passwordController,
-                      //     hintText: "********",
-                      //     prefixIcon: Icons.lock,
-                      //     obscureText: true,
-                      //     validator: (value) {
-                      //       if (value == null || value.isEmpty) {
-                      //         return 'Please enter your password';
-                      //       }
-                      //       if (value.length < 6) {
-                      //         return 'Password must be at least 6 characters long';
-                      //       }
-                      //       return null;
-                      //     },
-                      //   ),
-                      // ),
-                      // buildLabeledTextField(
-                      //   context,
-                      //   "Password",
-                      //   "Enter Your Password",
-                      //   obscureText: true,
-                      //   controller: _passwordController,
-                      //   validator: (value) {
-                      //     if (value == null || value.isEmpty) {
-                      //       return 'Please enter your password';
-                      //     }
-                      //     if (value.length < 8) {
-                      //       return 'Password must be at least 8 characters long';
-                      //     }
-                      //     return null;
-                      //   },
-                      // ),
-                      // buildLabeledTextField(
-                      //   context,
-                      //   "Password",
-                      //   "Enter Your Password",
-                      //   obscureText: _isObscure,
-                      //   prefixIcon: Icons.lock_outline,
-                      //   controller: _passwordController,
-                      //   validator: (value) {
-                      //     if (value == null || value.isEmpty) {
-                      //       return 'Please enter your password';
-                      //     }
-                      //     if (value.length < 8) {
-                      //       return 'Password must be at least 8 characters long';
-                      //     }
-                      //     return null;
-                      //   },
-                      //   suffixIcon: GestureDetector(
-                      //     onTap: () {
-                      //       setState(() {
-                      //         _isObscure = !_isObscure; // Toggle password visibility
-                      //       });
-                      //     },
-                      //     child: Icon(_isObscure ? Icons.visibility_off : Icons.visibility),
-                      //   ),
-                      //
-                      // ),
                       buildLabeledTextField(
                         context,
                         "Password",
