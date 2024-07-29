@@ -17,6 +17,8 @@ class RegistrationController {
       );
 
       if (response.statusCode == 201) {
+        print( "${response.body}");
+        print( "${response.statusCode}");
         return true; // Registration successful
       } else {
         // Handle errors based on response.statusCode

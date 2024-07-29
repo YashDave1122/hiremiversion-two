@@ -327,6 +327,7 @@ class _InternshipsScreenState extends State<InternshipsScreen> {
                             return Padding(
                               padding: EdgeInsets.only(bottom: screenHeight * 0.03),
                               child: OpportunityCard(
+                                  id: job['id'],
                                   dp: Image.asset('images/icons/logo1.png'), // Placeholder image
                                   profile: job['profile'] ?? 'N/A',
                                   companyName: job['company_name'] ?? 'N/A',

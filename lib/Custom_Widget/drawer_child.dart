@@ -492,7 +492,10 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:hiremi_version_two/Custom_Widget/Custom_alert_box.dart';
+import 'package:hiremi_version_two/Custom_Widget/SliderPageRoute.dart';
 import 'package:hiremi_version_two/Edit_Profile_Section/BasicDetails/AddBasicDetails.dart';
+import 'package:hiremi_version_two/Forget_Your_Password.dart';
 import 'package:hiremi_version_two/Help_Support.dart';
 import 'package:hiremi_version_two/Settings.dart';
 import 'package:hiremi_version_two/about_us.dart';
@@ -518,6 +521,21 @@ class _DrawerChildState extends State<DrawerChild> {
     setState(() {
       _fullName = fullName;
     });
+  }
+  void _showVerificationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          content: const CustomAlertbox(),
+        );
+      },
+    );
   }
 
   @override
@@ -606,8 +624,12 @@ class _DrawerChildState extends State<DrawerChild> {
                     SizedBox(height: screenHeight * 0.005),
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => const AddBasicDetails()));
+                        if (widget.isVerified) {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (ctx) => const AddBasicDetails()));
+                        } else {
+                          _showVerificationDialog();
+                        }
                       },
                       style: ButtonStyle(
                         foregroundColor:
@@ -678,7 +700,12 @@ class _DrawerChildState extends State<DrawerChild> {
                     style: TextStyle(fontSize: screenWidth * 0.034),
                   ),
                   trailing: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          SlidePageRoute(page: Forget_Your_Password()),
+                        );
+                      },
                       icon: const Icon(Icons.navigate_next))),
               SizedBox(height: screenHeight * 0.005),
               ListTile(

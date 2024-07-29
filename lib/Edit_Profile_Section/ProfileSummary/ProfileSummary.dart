@@ -1,15 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hiremi_version_two/Edit_Profile_Section/Key%20Skills/AddKeySkills.dart';
 import 'package:hiremi_version_two/Edit_Profile_Section/widgets/CustomTextField.dart';
 import 'package:hiremi_version_two/Profile_Screen.dart';
 import 'package:hiremi_version_two/Utils/AppSizes.dart';
 import 'package:hiremi_version_two/Utils/colors.dart';
 
+import '../../API_Integration/Add Profile Summary/apiServices.dart';
 
 class AddProfileSummary extends StatelessWidget {
-  AddProfileSummary({Key? key, }) : super(key: key);
+  AddProfileSummary({Key? key}) : super(key: key);
 
   final summaryController = TextEditingController();
+  final AddProfileSummaryService _apiService = AddProfileSummaryService();
+
+  Future<void> _saveProfileSummary(BuildContext context) async {
+    if (summaryController.text.isNotEmpty) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? profileId = prefs.getString('profileId');
+      print('Profile ID: $profileId');
+
+      if (profileId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profile ID not found')),
+        );
+        return;
+      }
+
+      final details = {
+        "profile": profileId,
+        "summary": summaryController.text,
+      };
+      print(details);
+
+      final success = await _apiService.addProfileSummary(details);
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profile summary added successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add profile summary')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +92,6 @@ class AddProfileSummary extends StatelessWidget {
             CustomTextField(
               controller: summaryController,
               hintText: 'Tell us about yourself...',
-              
             ),
             SizedBox(
               height: Sizes.responsiveXs(context),
@@ -79,67 +114,66 @@ class AddProfileSummary extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(Sizes.radiusSm)),
-                      padding: EdgeInsets.symmetric(
-                          vertical: Sizes.responsiveHorizontalSpace(context),
-                          horizontal: Sizes.responsiveMdSm(context)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Sizes.radiusSm)),
+                    padding: EdgeInsets.symmetric(
+                        vertical: Sizes.responsiveHorizontalSpace(context),
+                        horizontal: Sizes.responsiveMdSm(context)),
+                  ),
+                  onPressed: () async {
+                    await _saveProfileSummary(context);
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => ProfileScreen()));
+                  },
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.white,
                     ),
-                    onPressed: () {
-                      if (summaryController.text.isNotEmpty) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) =>  ProfileScreen()));
-                      }
-                    },
-                    child: const Text(
-                      'Save',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.white,
-                      ),
-                    )),
+                  ),
+                ),
                 OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side:   BorderSide(color: AppColors.primary,width: 0.5),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(Sizes.radiusSm)),
-                      padding: EdgeInsets.symmetric(
-                          vertical: Sizes.responsiveSm(context),
-                          horizontal: Sizes.responsiveMdSm(context)),
-                    ),
-                    onPressed: () {
-                      if(summaryController.text.isNotEmpty){
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) =>    AddKeySkills()));
-                      }
-                    },
-                    child:  Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Save & Next',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        SizedBox(
-                          width: Sizes.responsiveXs(context),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_sharp,
-                          size: 11,
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: AppColors.primary, width: 0.5),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Sizes.radiusSm)),
+                    padding: EdgeInsets.symmetric(
+                        vertical: Sizes.responsiveSm(context),
+                        horizontal: Sizes.responsiveMdSm(context)),
+                  ),
+                  onPressed: () async {
+                    await _saveProfileSummary(context);
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => AddKeySkills()));
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Save & Next',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
                           color: AppColors.primary,
-                        )
-                      ],
-                    )),
+                        ),
+                      ),
+                      SizedBox(
+                        width: Sizes.responsiveXs(context),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios_sharp,
+                        size: 11,
+                        color: AppColors.primary,
+                      )
+                    ],
+                  ),
+                ),
               ],
             )
-
           ],
         ),
       ),

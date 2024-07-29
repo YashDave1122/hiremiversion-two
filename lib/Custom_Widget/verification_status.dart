@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:hiremi_version_two/verification_screens/verifiaction_screen2.dart';
+import 'package:hiremi_version_two/verification_screens/verification_screen1.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/verify.dart';
@@ -164,11 +166,19 @@ class _VerificationStatusState extends State<VerificationStatus> {
                                         screenWidth *
                                             0.035), // Adjusted based on screen width
                                   ),
-                                  child: Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: screenWidth *
-                                        0.03, // Adjusted based on screen width
+                                  child: InkWell(
+                                  onTap:(){
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (ctx) =>
+                                            const VerificationScreen()));
+                                  },
+                                    child: Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: screenWidth *
+                                          0.03, // Adjusted based on screen width
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
@@ -231,7 +241,10 @@ class _VerificationStatusState extends State<VerificationStatus> {
                                   ),
                                   child: InkWell(
                                     onTap: (){
-
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (ctx) =>
+                                              const VerificationScreen1()));
                                     },
                                     child: Icon(
                                       Icons.call,
@@ -299,11 +312,19 @@ class _VerificationStatusState extends State<VerificationStatus> {
                                         screenWidth *
                                             0.035), // Adjusted based on screen width
                                   ),
-                                  child: Icon(
-                                    Icons.school,
-                                    color: widget.percent>=0.75? Colors.white: const Color(0xFFC1272D),
-                                    size: screenWidth *
-                                        0.03, // Adjusted based on screen width
+                                  child: InkWell(
+                                    onTap: (){
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (ctx) =>
+                                              const VerificationScreen2()));
+                                    },
+                                    child: Icon(
+                                      Icons.school,
+                                      color: widget.percent>=0.75? Colors.white: const Color(0xFFC1272D),
+                                      size: screenWidth *
+                                          0.03, // Adjusted based on screen width
+                                    ),
                                   ),
                                 ),
                                 SizedBox(

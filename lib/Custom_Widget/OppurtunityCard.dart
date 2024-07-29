@@ -273,6 +273,7 @@ import 'Custom_alert_box.dart';
 class OpportunityCard extends StatelessWidget {
   const OpportunityCard({
     Key? key,
+    required this.id,
     required this.dp,
     required this.profile,
     required this.companyName,
@@ -290,6 +291,7 @@ class OpportunityCard extends StatelessWidget {
     required this.whoCanApply,
   }) : super(key: key);
 
+  final int id;
   final Image dp;
   final String profile;
   final String companyName;
@@ -465,7 +467,7 @@ class OpportunityCard extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (ctx) => type == 'Job'
                             ? DetailedFresherJobs(
-                          id: 0,
+                          id: id,
                           profile: profile,
                           location: location,
                           codeRequired: '',
@@ -483,7 +485,7 @@ class OpportunityCard extends StatelessWidget {
                               ctc), // Convert to appropriate type if needed
                         )
                             : DetailedInternship(
-                          id: 0,
+                          id: id,
                           profile: profile,
                           location: location,
                           codeRequired: '',

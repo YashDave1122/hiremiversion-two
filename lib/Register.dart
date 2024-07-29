@@ -18,6 +18,23 @@ class Registers extends StatefulWidget {
 
 class _RegistersState extends State<Registers> {
   final _formKey = GlobalKey<FormState>();
+  final ScrollController _scrollController = ScrollController();
+  final Map<String, FocusNode> _focusNodes = {
+    'fullName': FocusNode(),
+    'fatherName': FocusNode(),
+    'email': FocusNode(),
+    'dob': FocusNode(),
+    'birthPlace': FocusNode(),
+    'phone': FocusNode(),
+    'whatsapp': FocusNode(),
+    'collegeName': FocusNode(),
+    'collegeState': FocusNode(),
+    'branch': FocusNode(),
+    'degree': FocusNode(),
+    'passingYear': FocusNode(),
+    'password': FocusNode(),
+    'confirmPassword': FocusNode(),
+  };
   Gender? _selectedGender=Gender.Male;
   String? _selectedState;
   DateTime? _selectedDate;
@@ -112,6 +129,14 @@ final List<String> _states = [
     _confirmPasswordController.dispose();
     super.dispose();
   }
+  void _scrollToFirstError(String key) {
+    _focusNodes[key]?.requestFocus();
+    _scrollController.animateTo(
+      _focusNodes[key]?.offset.dy ?? 0,
+      duration: Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +146,7 @@ final List<String> _states = [
 
     return Scaffold(
       body: SingleChildScrollView(
+        controller: _scrollController,
         child: Column(
           children: [
             Center(
@@ -171,6 +197,7 @@ final List<String> _states = [
                       "Full Name",
                       "John Doe",
                       controller: _fullNameController,
+                      focusNode: _focusNodes['fullName'],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your full name';
@@ -249,22 +276,7 @@ final List<String> _states = [
                       },
                     ),
                     buildSectionHeader("Contact Information"),
-                    // buildLabeledTextField(
-                    //   context,
-                    //   "Phone Number",
-                    //   "+91",
-                    //   keyboardType: TextInputType.phone,
-                    //   controller: _phoneController,
-                    //   validator: (value) {
-                    //     if (value == null || value.isEmpty) {
-                    //       return 'Please enter your phone number';
-                    //     }
-                    //     if (value.length < 10) {
-                    //       return 'Please enter a valid phone number';
-                    //     }
-                    //     return null;
-                    //   },
-                    // ),
+
                     buildLabeledTextField(
                       context,
                       "Phone Number",
@@ -339,7 +351,7 @@ final List<String> _states = [
                       context,
                       "College's State",
                       "Enter Your College's State",
-                      controller: _collegeStateController,
+                      controller:_collegeStateController,
                       dropdownItems: _states,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -352,8 +364,8 @@ final List<String> _states = [
                       context,
                       "Branch",
                       "Enter Your Branch Name",
-                      controller: _branchController,
-                      dropdownItems: ['Degree 1', 'Degree 2', 'Degree 3'],
+                      controller:_branchController,
+                      dropdownItems: ['Branch 1', 'Branch 2', 'Branch 3'],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your branch';
@@ -365,7 +377,7 @@ final List<String> _states = [
                       context,
                       "Degree",
                       "Enter Your Degree Name",
-                      controller: _degreeController,
+                      controller:_degreeController,
                       dropdownItems: ['Degree 1', 'Degree 2', 'Degree 3'],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -378,7 +390,7 @@ final List<String> _states = [
                       context,
                       "Passing Year",
                       "Enter Your Passing Year",
-                      controller: _passingYearController,
+                      controller:_passingYearController,
 
                       dropdownItems: ['2012', '2024', '2025'],
                       validator: (value) {
@@ -396,7 +408,7 @@ final List<String> _states = [
                       "Enter your password",
                       controller: _passwordController,
                       prefixIcon: Icons.lock_outline,
-                      obscureText: _isConfirmPasswordObscure,
+                      obscureText:_isConfirmPasswordObscure,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your password';
@@ -422,7 +434,7 @@ final List<String> _states = [
                       "Enter Your Confirm Password",
                       obscureText: _isObscure,
                       prefixIcon: Icons.lock_outline,
-                      controller: _confirmPasswordController,
+                      controller:_confirmPasswordController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your password';
@@ -486,6 +498,14 @@ final List<String> _states = [
                             );
                           }
                         }
+                        else{
+                          _focusNodes.forEach((key, node) {
+                            if (_formKey.currentState?.validate() == false) {
+                              _scrollToFirstError(key);
+                              return;
+                            }
+                          });
+                        }
                       },
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.025),
@@ -517,95 +537,13 @@ final List<String> _states = [
 
 
 
-  // Widget buildLabeledTextField(
-  //     BuildContext context,
-  //     String label,
-  //     String hintText, {
-  //       bool showPositionedBox = false,
-  //       IconData? prefixIcon,
-  //       Widget? suffixIcon,
-  //       bool obscureText = false,
-  //       List<String>? dropdownItems,
-  //       TextEditingController? controller,
-  //       String? Function(String?)? validator,
-  //       VoidCallback? onTap,
-  //       TextInputType? keyboardType,
-  //     }) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Padding(
-  //         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
-  //         child: RichText(
-  //           text: TextSpan(
-  //             children: [
-  //               TextSpan(
-  //                 text: label,
-  //                 style: const TextStyle(color: Colors.black),
-  //               ),
-  //               const TextSpan(
-  //                 text: " *",
-  //                 style: TextStyle(color: Colors.red),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //       SizedBox(height: MediaQuery.of(context).size.height * 0.0185),
-  //       Padding(
-  //         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
-  //         child: dropdownItems != null
-  //             ? DropdownButtonFormField<String>(
-  //           decoration: InputDecoration(
-  //
-  //             hintText: hintText,
-  //             prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-  //             border: OutlineInputBorder(
-  //               borderRadius: BorderRadius.circular(10),
-  //             ),
-  //           ),
-  //           value: controller?.text.isNotEmpty == true ? controller?.text : null,
-  //           hint: Text(hintText),
-  //           onChanged: (String? newValue) {
-  //             setState(() {
-  //               controller?.text = newValue!;
-  //             });
-  //           },
-  //           items: dropdownItems.map((String item) {
-  //             return DropdownMenuItem<String>(
-  //
-  //               value: item,
-  //               child: Text(item),
-  //             );
-  //           }).toList(),
-  //           validator: validator,
-  //           isExpanded: true,
-  //         )
-  //             : TextFormField(
-  //           controller: controller,
-  //           decoration: InputDecoration(
-  //             hintText: hintText,
-  //             prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-  //             border: OutlineInputBorder(
-  //               borderRadius: BorderRadius.circular(10),
-  //             ),
-  //           ),
-  //           obscureText: obscureText,
-  //           suffixIcon: suffixIcon,
-  //           validator: validator,
-  //           onTap: onTap,
-  //           keyboardType: keyboardType,
-  //         ),
-  //       ),
-  //       SizedBox(height: MediaQuery.of(context).size.height * 0.0185),
-  //     ],
-  //   );
-  // }
+
   Widget buildLabeledTextField(
       BuildContext context,
       String label,
       String hintText, {
         bool showPositionedBox = false,
+        FocusNode? focusNode,
         IconData? prefixIcon,
         Widget? suffixIcon,
         bool obscureText = false,
@@ -665,6 +603,7 @@ final List<String> _states = [
           )
               : TextFormField(
             controller: controller,
+            focusNode: focusNode,
             decoration: InputDecoration(
               hintText: hintText,
               prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,

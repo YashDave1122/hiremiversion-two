@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/Custom_Widget/Curved_Container.dart';
 import 'package:hiremi_version_two/Custom_Widget/Elevated_Button.dart';
 import 'package:hiremi_version_two/Custom_Widget/SliderPageRoute.dart';
-import 'package:hiremi_version_two/HomePage.dart';
+import 'package:hiremi_version_two/HiremiScreen.dart';
 import 'package:hiremi_version_two/bottomnavigationbar.dart';
 import 'package:hiremi_version_two/Forget_Your_Password.dart';
 import 'package:hiremi_version_two/Register.dart';
@@ -41,10 +41,51 @@ class _LogInState extends State<LogIn> {
     });
 
     print("Saved email is $_savedEmail");
-    isV = await _isEmailVerified();
+     await _isEmailVerified();
 
 
   }
+
+  // Future<bool> _isEmailVerified() async {
+  //   final String apiUrl = "http://13.127.81.177:8000/api/registers/";
+  //   final response = await http.get(Uri.parse(apiUrl));
+  //
+  //   if (response.statusCode == 200) {
+  //     final List<dynamic> users = jsonDecode(response.body);
+  //     for (var user in users) {
+  //       if (user['email'] == _savedEmail && user['verified'] == true) {
+  //         id=user['id'];
+  //         final pref=await SharedPreferences.getInstance();
+  //         await pref.setInt('userId', id);
+  //         print("Id is $id");
+  //         await _retrieveId();
+  //
+  //         var sharedpref=await SharedPreferences.getInstance();
+  //         sharedpref.setBool(HiremiScreenState.KEYLOGIN, true);
+  //
+  //         print("Verified is true");
+  //
+  //         Navigator.push(
+  //           context,
+  //           SlidePageRoute(page: NewNavbar(isV: true,)),
+  //         );
+  //         final prefs=await SharedPreferences.getInstance();
+  //         await prefs.setInt('userId', id);
+  //         print("Id is $id");
+  //         await _retrieveId();
+  //         return true;
+  //       }
+  //     }
+  //   }
+  //
+  //   var sharedpref=await SharedPreferences.getInstance();
+  //   sharedpref.setBool(HiremiScreenState.KEYLOGIN, true);
+  //   Navigator.push(
+  //     context,
+  //     SlidePageRoute(page: NewNavbar(isV: false,)),
+  //   );
+  //   return false;
+  // }
   Future<bool> _isEmailVerified() async {
     final String apiUrl = "http://13.127.81.177:8000/api/registers/";
     final response = await http.get(Uri.parse(apiUrl));
@@ -52,24 +93,33 @@ class _LogInState extends State<LogIn> {
     if (response.statusCode == 200) {
       final List<dynamic> users = jsonDecode(response.body);
       for (var user in users) {
-        if (user['email'] == _savedEmail && user['verified'] == true) {
-          id=user['id'];
+        if (user['email'] == _savedEmail) {
+          id = user['id'];
 
-          print("Verified is true");
+
+          final pref=await SharedPreferences.getInstance();
+          await pref.setInt('userId', id);
+          print("Id is $id");
+          await _retrieveId();
+          print("Verified is ${user['verified']}");
+          var sharedpref=await SharedPreferences.getInstance();
+          sharedpref.setBool(HiremiScreenState.KEYLOGIN, true);
+
           Navigator.push(
             context,
-            SlidePageRoute(page: NewNavbar(isV: true,)),
+            SlidePageRoute(
+              page: NewNavbar(isV: user['verified']),
+            ),
           );
           return true;
         }
       }
     }
-    Navigator.push(
-      context,
-      SlidePageRoute(page: NewNavbar(isV: false,)),
-    );
+
     return false;
   }
+
+
 
   Future<void> _retrieveId() async {
     final prefs = await SharedPreferences.getInstance();
@@ -88,6 +138,7 @@ class _LogInState extends State<LogIn> {
       return;
     }
 
+
     final String apiUrl = "http://13.127.81.177:8000/login/";
     final response = await http.post(
       Uri.parse(apiUrl),
@@ -99,20 +150,19 @@ class _LogInState extends State<LogIn> {
     );
 
     if (response.statusCode == 200) {
-      // Login successful
+
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('email', _emailController.text); // Save email to SharedPreferences
+
       print("Login successful");
       _printSavedEmail();
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt('userId', id);
-      _retrieveId();
-
-      //final prefs = await SharedPreferences.getInstance();
-      //await prefs.setString('email', _emailController.text);
 
 
+    }
 
-    } else {
+    else {
       // Login failed
       print("Login failed");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -126,8 +176,8 @@ class _LogInState extends State<LogIn> {
 
   @override
   void initState() {
-    // TODO: implement initState
-   // _isEmailVerified();
+
+    // _retrieveId();
   }
 
   @override

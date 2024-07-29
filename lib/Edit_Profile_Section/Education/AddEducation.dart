@@ -1,17 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hiremi_version_two/Edit_Profile_Section/Experience/AddExperience.dart';
 import 'package:hiremi_version_two/Edit_Profile_Section/widgets/CustomTextField.dart';
 import 'package:hiremi_version_two/Profile_Screen.dart';
 import 'package:hiremi_version_two/Utils/AppSizes.dart';
 import 'package:hiremi_version_two/Utils/colors.dart';
 
+import '../../API_Integration/Add Education/apiServices.dart';
+
+
 class AddEducation extends StatelessWidget {
-  AddEducation({Key? key, }) : super(key: key);
+  AddEducation({Key? key}) : super(key: key);
 
   final educationController = TextEditingController();
   final courseController = TextEditingController();
   final yearController = TextEditingController();
   final marksController = TextEditingController();
+  final AddEducationService _apiService = AddEducationService();
+  String profileId="";
+
+  Future<void> _saveEducation(BuildContext context) async {
+    if (educationController.text.isNotEmpty &&
+        courseController.text.isNotEmpty &&
+        yearController.text.isNotEmpty &&
+        marksController.text.isNotEmpty) {
+      // final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // final String? profileId = prefs.getString('profileId');
+      // print('Profile ID: $profileId');
+      final prefs = await SharedPreferences.getInstance();
+      final int? savedId = prefs.getInt('userId');
+      if (savedId != null) {
+        print("Retrieved id is $savedId");
+        profileId=savedId.toString();
+      } else {
+        print("No id found in SharedPreferences");
+      }
+
+      if (profileId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profile ID not found')),
+        );
+        return;
+      }
+
+      final details = {
+        "degree": educationController.text,
+        "institution": courseController.text,
+        "passing_year": yearController.text,
+        //"marks": marksController.text,
+        "profile": profileId,
+      };
+      print(details);
+
+      final success = await _apiService.addEducation(details);
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Education details added successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add education details')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,64 +212,64 @@ class AddEducation extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(Sizes.radiusSm)),
-                      padding: EdgeInsets.symmetric(
-                          vertical: Sizes.responsiveHorizontalSpace(context),
-                          horizontal: Sizes.responsiveMdSm(context)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Sizes.radiusSm)),
+                    padding: EdgeInsets.symmetric(
+                        vertical: Sizes.responsiveHorizontalSpace(context),
+                        horizontal: Sizes.responsiveMdSm(context)),
+                  ),
+                  onPressed: () async {
+                    await _saveEducation(context);
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => ProfileScreen()));
+                  },
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.white,
                     ),
-                    onPressed: () {
-                      if (educationController.text.isNotEmpty && courseController.text.isNotEmpty && yearController.text.isNotEmpty && marksController.text.isNotEmpty) {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => ProfileScreen()));
-                      }
-                    },
-                    child: const Text(
-                      'Save',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.white,
-                      ),
-                    )),
+                  ),
+                ),
                 OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: AppColors.primary, width: 0.5),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(Sizes.radiusSm)),
-                      padding: EdgeInsets.symmetric(
-                          vertical: Sizes.responsiveSm(context),
-                          horizontal: Sizes.responsiveMdSm(context)),
-                    ),
-                    onPressed: () {
-                      if (educationController.text.isNotEmpty && courseController.text.isNotEmpty && yearController.text.isNotEmpty && marksController.text.isNotEmpty) {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => const AddExperience()));
-                      }
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Save & Next',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        SizedBox(
-                          width: Sizes.responsiveXs(context),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_sharp,
-                          size: 11,
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: AppColors.primary, width: 0.5),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Sizes.radiusSm)),
+                    padding: EdgeInsets.symmetric(
+                        vertical: Sizes.responsiveSm(context),
+                        horizontal: Sizes.responsiveMdSm(context)),
+                  ),
+                  onPressed: () async {
+                    await _saveEducation(context);
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => AddExperience()));
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Save & Next',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
                           color: AppColors.primary,
-                        )
-                      ],
-                    )),
+                        ),
+                      ),
+                      SizedBox(
+                        width: Sizes.responsiveXs(context),
+                      ),
+                      Icon(
+                        Icons.arrow_forward_ios_sharp,
+                        size: 11,
+                        color: AppColors.primary,
+                      )
+                    ],
+                  ),
+                ),
               ],
             )
           ]),

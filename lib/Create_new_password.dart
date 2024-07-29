@@ -379,6 +379,7 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
   final TextEditingController _confirmPasswordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final UserService _userService = UserService();
+  bool _isObscure = true;
 
 
 
@@ -439,78 +440,130 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
                     children: [
                       SizedBox(height: MediaQuery.of(context).size.height * 0.0215),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.0115),
-                      Padding(
-                        padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.611),
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "Password",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              TextSpan(
-                                text: " *",
-                                style: TextStyle(color: Colors.red), // Red asterisk
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.611),
+                      //   child: RichText(
+                      //     text: TextSpan(
+                      //       children: [
+                      //         TextSpan(
+                      //           text: "Password",
+                      //           style: TextStyle(color: Colors.black),
+                      //         ),
+                      //         TextSpan(
+                      //           text: " *",
+                      //           style: TextStyle(color: Colors.red), // Red asterisk
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.0205),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
-                        child: CurvedTextField(
-                          controller: _passwordController,
-                          hintText: "********",
-                          prefixIcon: Icons.lock,
-                          obscureText: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            if (value.length < 8) {
-                              return 'Password must be at least 8 characters long';
-                            }
-                            return null;
+                      // Padding(
+                      //   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
+                      //   child: CurvedTextField(
+                      //     controller: _passwordController,
+                      //     hintText: "********",
+                      //     prefixIcon: Icons.lock,
+                      //     obscureText: true,
+                      //     validator: (value) {
+                      //       if (value == null || value.isEmpty) {
+                      //         return 'Please enter your password';
+                      //       }
+                      //       if (value.length < 8) {
+                      //         return 'Password must be at least 8 characters long';
+                      //       }
+                      //       return null;
+                      //     },
+                      //   ),
+                      // ),
+                      buildLabeledTextField(
+                        context,
+                        "Password",
+                        "Enter Your Password",
+                        obscureText: _isObscure,
+                        prefixIcon: Icons.lock_outline,
+                        controller: _passwordController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          if (value.length < 8) {
+                            return 'Password must be at least 8 characters long';
+                          }
+                          return null;
+                        },
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isObscure = !_isObscure; // Toggle password visibility
+                            });
                           },
+                          child: Icon(_isObscure ? Icons.visibility_off : Icons.visibility),
                         ),
+                        // Set to true to show the box with the prefix icon
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.0115),
-                      Padding(
-                        padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.411),
-                        child: RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: "Confirm new Password",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              TextSpan(
-                                text: " *",
-                                style: TextStyle(color: Colors.red), // Red asterisk
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.0205),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
-                        child: CurvedTextField(
-                          controller: _confirmPasswordController,
-                          hintText: "********",
-                          prefixIcon: Icons.lock,
-                          obscureText: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              // return 'Please confirm your password';
-                            }
-                            if (value != _passwordController.text) {
-                              //return 'Passwords do not match';
-                            }
-                            return null;
+                      // Padding(
+                      //   padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.411),
+                      //   child: RichText(
+                      //     text: TextSpan(
+                      //       children: [
+                      //         TextSpan(
+                      //           text: "Confirm new Password",
+                      //           style: TextStyle(color: Colors.black),
+                      //         ),
+                      //         TextSpan(
+                      //           text: " *",
+                      //           style: TextStyle(color: Colors.red), // Red asterisk
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
+                      // SizedBox(height: MediaQuery.of(context).size.height * 0.0205),
+                      // Padding(
+                      //   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
+                      //   child: CurvedTextField(
+                      //     controller: _confirmPasswordController,
+                      //     hintText: "********",
+                      //     prefixIcon: Icons.lock,
+                      //     obscureText: true,
+                      //     validator: (value) {
+                      //       if (value == null || value.isEmpty) {
+                      //         // return 'Please confirm your password';
+                      //       }
+                      //       if (value != _passwordController.text) {
+                      //         //return 'Passwords do not match';
+                      //       }
+                      //       return null;
+                      //     },
+                      //   ),
+                      // ),
+                      buildLabeledTextField(
+                        context,
+                        "Confirm Password",
+                        "Enter Confirm Your Password",
+                        obscureText: _isObscure,
+                        prefixIcon: Icons.lock_outline,
+                        controller: _confirmPasswordController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          if (value.length < 8) {
+                            return 'Password must be at least 8 characters long';
+                          }
+                          return null;
+                        },
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isObscure = !_isObscure; // Toggle password visibility
+                            });
                           },
+                          child: Icon(_isObscure ? Icons.visibility_off : Icons.visibility),
                         ),
+                        // Set to true to show the box with the prefix icon
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.0247),
                       RichText(
@@ -583,6 +636,174 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
           ),
         ),
       ),
+    );
+  }
+  Widget buildLabeledTextField(
+      BuildContext context,
+      String label,
+      String hintText, {
+        bool showPositionedBox = false,
+        IconData? positionedIcon,
+        IconData? prefixIcon,
+        bool obscureText = false,
+        List<String>? dropdownItems,
+        TextEditingController? controller,
+        String? Function(String?)? validator,
+        VoidCallback? onTap,
+        TextInputType? keyboardType,
+        Widget? suffixIcon,
+        bool showContainer = false,
+      }) {
+    double calculatedBorderRadius = MediaQuery.of(context).size.width * 0.02;
+    double calculatedSemiCircleWidth = MediaQuery.of(context).size.width * 0.08;
+    double calculatedPaddingStart = MediaQuery.of(context).size.width * 0.1;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: label,
+                  style: TextStyle(color: Colors.black),
+                ),
+                TextSpan(
+                  text: " *",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.0185),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
+          child: showContainer
+              ? Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.redAccent),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              children: [
+                if (showPositionedBox)
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    child: Container(
+                      width: calculatedSemiCircleWidth,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(calculatedBorderRadius),
+                          bottomLeft: Radius.circular(calculatedBorderRadius),
+                        ),
+                        border: Border(
+                          right: BorderSide(
+                            color: const Color(0xFF808080),
+                            width: 1.0,
+                          ),
+                        ),
+                      ),
+                      child: Center(
+                        child: positionedIcon != null
+                            ? Icon(
+                          positionedIcon,
+                          color: Colors.grey[400],
+                        )
+                            : null,
+                      ),
+                    ),
+                  ),
+                Expanded(
+                  child: dropdownItems != null
+                      ? DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      hintText: hintText,
+                      border: InputBorder.none,
+                      prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+                    ),
+                    value: controller?.text.isNotEmpty == true ? controller?.text : null,
+                    hint: Text(hintText),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        controller?.text = newValue!;
+                      });
+                    },
+                    items: dropdownItems.map((String item) {
+                      return DropdownMenuItem<String>(
+                        value: item,
+                        child: Text(item),
+                      );
+                    }).toList(),
+                    validator: validator,
+                  )
+                      : TextFormField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      hintText: hintText,
+                      border: InputBorder.none,
+                      prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+                      suffixIcon: suffixIcon,
+                    ),
+                    obscureText: obscureText,
+                    validator: validator,
+                    onTap: onTap,
+                    keyboardType: keyboardType,
+                  ),
+                ),
+                if (suffixIcon != null) suffixIcon,
+              ],
+            ),
+          )
+              : dropdownItems != null
+              ? DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              hintText: hintText,
+              prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            value: controller?.text.isNotEmpty == true ? controller?.text : null,
+            hint: Text(hintText),
+            onChanged: (String? newValue) {
+              setState(() {
+                controller?.text = newValue!;
+              });
+            },
+            items: dropdownItems.map((String item) {
+              return DropdownMenuItem<String>(
+                value: item,
+                child: Text(item),
+              );
+            }).toList(),
+            validator: validator,
+          )
+              : TextFormField(
+            controller: controller,
+            decoration: InputDecoration(
+              hintText: hintText,
+              prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              suffixIcon: suffixIcon,
+            ),
+            obscureText: obscureText,
+            validator: validator,
+            onTap: onTap,
+            keyboardType: keyboardType,
+          ),
+        ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.0185),
+      ],
     );
   }
 

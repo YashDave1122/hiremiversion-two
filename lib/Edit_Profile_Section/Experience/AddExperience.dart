@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hiremi_version_two/Utils/AppSizes.dart';
 import 'package:hiremi_version_two/Utils/colors.dart';
+import '../../API_Integration/Add Experience/apiServices.dart';
 import '../widgets/CustomTextField.dart';
+import 'package:intl/intl.dart';
 
 class AddExperience extends StatefulWidget {
   const AddExperience({Key? key}) : super(key: key);
@@ -17,6 +20,63 @@ class _AddExperienceState extends State<AddExperience> {
   final jobTitleController = TextEditingController();
   final skillSetController = TextEditingController();
   final joiningDateController = TextEditingController();
+  final AddExperienceService _apiService = AddExperienceService();
+  DateTime? _selectedDate;
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (pickedDate != null && pickedDate != _selectedDate) {
+      setState(() {
+        _selectedDate = pickedDate;
+        joiningDateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+      });
+    }
+  }
+
+  Future<void> _saveExperience() async {
+    if (organizationController.text.isNotEmpty &&
+        jobTitleController.text.isNotEmpty &&
+        joiningDateController.text.isNotEmpty) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? profileId = prefs.getString('profileId');
+      print('Profile ID: $profileId');
+
+      if (profileId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profile ID not found')),
+        );
+        return;
+      }
+
+      final details = {
+        "job_title": jobTitleController.text,
+        "company_name": organizationController.text,
+        "start_date": joiningDateController.text,
+        "end_date": null,
+        "description": skillSetController.text,
+        "profile": profileId,
+      };
+      print(details);
+
+      final success = await _apiService.addExperience(details);
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Experience details added successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add experience details')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -245,7 +305,7 @@ class _AddExperienceState extends State<AddExperience> {
             children: [
               Row(children: [
                 const Text(
-                  'SkillSet Used(Optional)',
+                  'SkillSet Used (Optional)',
                   style: TextStyle(
                       fontSize: 12, fontWeight: FontWeight.w500),
                 ),
@@ -289,60 +349,68 @@ class _AddExperienceState extends State<AddExperience> {
               SizedBox(
                 height: Sizes.responsiveSm(context),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Sizes.radiusXs),
-                  border: Border.all(width: 0.37, color: AppColors.black),
-                ),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.calendar_month_sharp,
-                        size: 14,
-                        color: AppColors.secondaryText,
-                      ),
+              GestureDetector(
+                onTap: () => _selectDate(context),
+                child: AbsorbPointer(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(Sizes.radiusXs),
+                      border: Border.all(width: 0.37, color: AppColors.black),
                     ),
-                    const VerticalDivider(
-                      thickness: 1.0,
-                      width: 0.37,
-                      color: AppColors.black,
-                    ),
-                    Expanded(
-                      child: TextField(
-                        controller: joiningDateController,
-                        cursorColor: AppColors.black,
-                        textAlign: TextAlign.start,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        expands: false,
-                        keyboardType: TextInputType.datetime,
-                        decoration: InputDecoration(
-                          hintText: 'DD/MM/YYYY',
-                          suffixIconColor: AppColors.secondaryText,
-                          contentPadding: EdgeInsets.symmetric(
-                            vertical: Sizes.responsiveSm(context),
-                            horizontal: Sizes.responsiveMd(context),
-                          ),
-                          alignLabelWithHint: true,
-                          hintStyle: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.calendar_today,
+                            size: 14,
                             color: AppColors.secondaryText,
                           ),
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
                         ),
-                      ),
+                        const VerticalDivider(
+                          thickness: 1.0,
+                          width: 0.37,
+                          color: AppColors.black,
+                        ),
+                        Expanded(
+                          child: TextField(
+                            controller: joiningDateController,
+                            cursorColor: AppColors.black,
+                            textAlign: TextAlign.start,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: 'YYYY-MM-DD',
+                              suffixIconColor: AppColors.secondaryText,
+                              contentPadding: EdgeInsets.symmetric(
+                                vertical: Sizes.responsiveSm(context),
+                                horizontal: Sizes.responsiveMd(context),
+                              ),
+                              alignLabelWithHint: true,
+                              hintStyle: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.secondaryText,
+                              ),
+                              border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ],
+          ),
+          SizedBox(height: Sizes.responsiveMd(context)),
+          ElevatedButton(
+            onPressed: _saveExperience,
+            child: Text('Save Experience'),
           ),
         ]),
       ),

@@ -121,6 +121,9 @@ import 'package:hiremi_version_two/Fresher_Jobs/skillsRequired.dart';
 import 'package:hiremi_version_two/Notofication_screen.dart';
 import 'package:hiremi_version_two/SuccesfullyAppliedalert.dart';
 import 'package:hiremi_version_two/Utils/AppSizes.dart';
+import 'package:hiremi_version_two/Utils/colors.dart';
+
+import '../API_Integration/Apply Fresher Jobs/apiServices.dart';
 
 
 
@@ -161,6 +164,20 @@ class DetailedFresherJobs extends StatefulWidget {
 }
 
 class _DetailedFresherJobsState extends State<DetailedFresherJobs> {
+  bool _isApplied = false;
+
+  Future<void> _applyForFresherJob() async {
+    print(widget.id);
+
+    try {
+      await ApiServices.applyForJob(widget.id, context);
+      setState(() {
+        _isApplied = true;
+      });
+    } catch (error) {
+      print('Error applying for fresher job: $error');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -233,6 +250,46 @@ class _DetailedFresherJobsState extends State<DetailedFresherJobs> {
               /// Eligibility Criteria
               EligibilityCriteriaAboutCompanyFresher(
 
+              ),
+              Center(
+                child: SizedBox(
+                  width: Sizes.responsiveXxl(context) * 2.02,
+                  height: Sizes.responsiveLg(context) * 1.06,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isApplied ? Colors.green : Color(0xFFC1272D),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Sizes.radiusXs),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: Sizes.responsiveHorizontalSpace(context),
+                        horizontal: Sizes.responsiveMdSm(context),
+                      ),
+                    ),
+                    onPressed: _isApplied ? null : _applyForFresherJob,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Apply Now',
+                          style: TextStyle(
+                            fontSize: 8.5,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.white,
+                          ),
+                        ),
+                        SizedBox(
+                          width: Sizes.responsiveXs(context),
+                        ),
+                        const Icon(
+                          Icons.arrow_forward_ios_sharp,
+                          size: 8,
+                          color: AppColors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

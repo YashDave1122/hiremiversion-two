@@ -44,6 +44,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _scrollController.addListener(_onScroll);
     _fetchJobs();
+    print(widget.isVerified);
     fetchAndSaveFullName();
   }
 
@@ -275,8 +276,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: TextButton(
                       onPressed: () {
-                        _navigateToPage(InternshipsScreen(isVerified: widget.isVerified));
-                      },
+                        Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => FresherJobs(isVerified: widget.isVerified)));
+
+                                              },
                       child: Row(
                         children: [
                           Container(
@@ -396,6 +398,7 @@ class _HomePageState extends State<HomePage> {
                   return Padding(
                     padding: EdgeInsets.only(bottom: screenHeight * 0.03),
                     child: OpportunityCard(
+                      id: job['id'],
                       dp: Image.asset('images/icons/logo1.png'), // Placeholder image
                       profile: job['profile'] ?? 'N/A',
                       companyName: job['company_name'] ?? 'N/A',

@@ -465,21 +465,45 @@ class _VerifiedPageState extends State<VerifiedPage> {
                 SizedBox(
                   height: screenHeight * 0.06,
                 ),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.pushAndRemoveUntil(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) => const NewNavbar(isV: true)),
+                //
+                //     );
+                //   },
+                //   style: ButtonStyle(
+                //     foregroundColor:
+                //     WidgetStateProperty.all<Color>(Colors.white),
+                //     backgroundColor:
+                //     WidgetStateProperty.all<Color>(const Color(0xFFC1272D)),
+                //     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                //       RoundedRectangleBorder(
+                //         borderRadius: BorderRadius.circular(8.0),
+                //       ),
+                //     ),
+                //   ),
+                //   child: Text(
+                //     'Continue Exploration >',
+                //     style: TextStyle(fontSize: screenWidth * 0.025),
+                //   ),
+                // ),
                 ElevatedButton(
                   onPressed: () {
-                    // Navigator.pushAndRemoveUntil(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => const NewNavbar(isV: true)),
-                    //       (Route<dynamic> route) => false,
-                    // );
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NewNavbar(isV: true),
+                      ),
+                          (route) => false, // This will remove all previous routes
+                    );
                   },
                   style: ButtonStyle(
-                    foregroundColor:
-                    WidgetStateProperty.all<Color>(Colors.white),
-                    backgroundColor:
-                    WidgetStateProperty.all<Color>(const Color(0xFFC1272D)),
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                    backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFFC1272D)),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -490,6 +514,7 @@ class _VerifiedPageState extends State<VerifiedPage> {
                     style: TextStyle(fontSize: screenWidth * 0.025),
                   ),
                 ),
+
               ],
             )
           ],
