@@ -36,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = true;
   String FullName = "";
   String storedEmail = '';
+  String UID="";
 
   final ScrollController _scrollController = ScrollController();
 
@@ -92,6 +93,8 @@ class _HomePageState extends State<HomePage> {
           if (user['email'] == storedEmail) {
             setState(() {
               FullName = user['full_name'] ?? 'No name saved';
+              UID=user['unique'];
+
             });
             await prefs.setString('full_name', FullName);
             print('Full name saved: $FullName');
@@ -110,56 +113,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _chechVerified() async {
-    const String apiUrl = "http://13.127.81.177:8000/api/registers/";
 
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final prefs = await SharedPreferences.getInstance();
-        storedEmail = prefs.getString('email') ?? 'No email saved';
-
-        for (var user in data) {
-          if (user['email'] == storedEmail) {
-            setState(() {
-              FullName = user['full_name'] ?? 'No name saved';
-            });
-            await prefs.setString('full_name', FullName);
-            print('Full name saved: $FullName');
-            break;
-          }
-        }
-
-        if (FullName.isEmpty) {
-          print('No matching email found');
-        }
-      } else {
-        print('Failed to fetch full name');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
-  Future<void> _printSavedEmail() async {
-    final prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString('email') ?? 'No email saved';
-    storedEmail = email;
-    print(email);
-  }
-
-  Future<bool> _onWillPop() async {
-    // Navigate back to the NewNavbar page
-    Navigator.of(context).popUntil((route) => route.isFirst);
-    return false; // Prevent the default back behavior
-  }
-
-  void _navigateToPage(Widget page) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => page));
-    print("Hello i am in _navigateToPage");
-  }
+  final List<String> bannerImages = [
+    'images/icons/Hiremi Banner.png',
+    'images/icons/Hiremi Banner2.png',
+    'images/icons/Hiremi Banner3.png',
+    'images/icons/Hiremi Banner4.png',
+    'images/icons/Hiremi Banner5.png'
+  ];
+  final List<String> verifiedBannerImages = [
+    'images/icons/Hiremi Verified Banner.png',
+    'images/icons/Hiremi Verified Banner2.png',
+    'images/icons/Hiremi Verified Banner3.png',
+    'images/icons/Hiremi Verified Banner4.png',
+    'images/icons/Hiremi Verified Banner5.png'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +167,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (!widget.isVerified) VerificationStatus(percent: 0.5),
-              if (widget.isVerified) VerifiedProfileWidget(name: FullName, appId: '00011102'),
+              if (widget.isVerified) VerifiedProfileWidget(name: FullName, appId: UID),
               SizedBox(height: screenHeight * 0.02),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,24 +179,28 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(height: screenHeight * 0.02),
                   Column(
                     children: [
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          height: 155,
-                          viewportFraction: 0.95,
-                          autoPlay: true,
-                          onPageChanged: (index, reason) {
-                            setState(() {
-                              _current = index;
-                            });
-                          },
-                        ),
-                        items: [1, 2, 3, 4, 5].map((i) {
-                          return Builder(
-                            builder: (BuildContext context) {
-                              return AdBanner(isVerified: widget.isVerified);
+
+                      SizedBox(
+                        width: screenWidth * 0.98,
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            height: screenHeight*0.139,
+                            viewportFraction: 1.25,
+                            autoPlay: true,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _current = index;
+                              });
                             },
-                          );
-                        }).toList(),
+                          ),
+                          items: (widget.isVerified ? verifiedBannerImages : bannerImages).map((image) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return Image.asset(image, fit: BoxFit.cover);
+                              },
+                            );
+                          }).toList(),
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -276,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: TextButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => FresherJobs(isVerified: widget.isVerified)));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => InternshipsScreen(isVerified: widget.isVerified)));
 
                                               },
                       child: Row(

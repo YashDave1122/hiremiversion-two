@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hiremi_version_two/Custom_Widget/Curved_Container.dart';
@@ -18,7 +17,7 @@ class LogIn extends StatefulWidget {
   State<LogIn> createState() => _LogInState();
 }
 
-class _LogInState extends State<LogIn> {
+class _LogInState extends State<LogIn>{
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -30,9 +29,7 @@ class _LogInState extends State<LogIn> {
 
 
   Future<String?> _printSavedEmail() async {
-    // final prefs = await SharedPreferences.getInstance();
-    // final email = prefs.getString('email') ?? 'No email saved';
-    // print("email saved is $email");
+
     final prefs = await SharedPreferences.getInstance();
     final id=await SharedPreferences.getInstance();
     setState(() {
@@ -46,46 +43,7 @@ class _LogInState extends State<LogIn> {
 
   }
 
-  // Future<bool> _isEmailVerified() async {
-  //   final String apiUrl = "http://13.127.81.177:8000/api/registers/";
-  //   final response = await http.get(Uri.parse(apiUrl));
-  //
-  //   if (response.statusCode == 200) {
-  //     final List<dynamic> users = jsonDecode(response.body);
-  //     for (var user in users) {
-  //       if (user['email'] == _savedEmail && user['verified'] == true) {
-  //         id=user['id'];
-  //         final pref=await SharedPreferences.getInstance();
-  //         await pref.setInt('userId', id);
-  //         print("Id is $id");
-  //         await _retrieveId();
-  //
-  //         var sharedpref=await SharedPreferences.getInstance();
-  //         sharedpref.setBool(HiremiScreenState.KEYLOGIN, true);
-  //
-  //         print("Verified is true");
-  //
-  //         Navigator.push(
-  //           context,
-  //           SlidePageRoute(page: NewNavbar(isV: true,)),
-  //         );
-  //         final prefs=await SharedPreferences.getInstance();
-  //         await prefs.setInt('userId', id);
-  //         print("Id is $id");
-  //         await _retrieveId();
-  //         return true;
-  //       }
-  //     }
-  //   }
-  //
-  //   var sharedpref=await SharedPreferences.getInstance();
-  //   sharedpref.setBool(HiremiScreenState.KEYLOGIN, true);
-  //   Navigator.push(
-  //     context,
-  //     SlidePageRoute(page: NewNavbar(isV: false,)),
-  //   );
-  //   return false;
-  // }
+
   Future<bool> _isEmailVerified() async {
     final String apiUrl = "http://13.127.81.177:8000/api/registers/";
     final response = await http.get(Uri.parse(apiUrl));
@@ -104,7 +62,6 @@ class _LogInState extends State<LogIn> {
           print("Verified is ${user['verified']}");
           var sharedpref=await SharedPreferences.getInstance();
           sharedpref.setBool(HiremiScreenState.KEYLOGIN, true);
-
           Navigator.push(
             context,
             SlidePageRoute(
@@ -114,7 +71,7 @@ class _LogInState extends State<LogIn> {
           return true;
         }
       }
-    }
+      }
 
     return false;
   }

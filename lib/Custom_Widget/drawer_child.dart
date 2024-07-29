@@ -497,6 +497,8 @@ import 'package:hiremi_version_two/Custom_Widget/SliderPageRoute.dart';
 import 'package:hiremi_version_two/Edit_Profile_Section/BasicDetails/AddBasicDetails.dart';
 import 'package:hiremi_version_two/Forget_Your_Password.dart';
 import 'package:hiremi_version_two/Help_Support.dart';
+import 'package:hiremi_version_two/HiremiScreen.dart';
+import 'package:hiremi_version_two/Login.dart';
 import 'package:hiremi_version_two/Settings.dart';
 import 'package:hiremi_version_two/about_us.dart';
 
@@ -731,9 +733,7 @@ class _DrawerChildState extends State<DrawerChild> {
                             builder: (ctx) => const About_Us()));
                       },
                       icon: const Icon(Icons.navigate_next))),
-              SizedBox(
-                height: screenHeight * 0.25,
-              ),
+              SizedBox(height: screenHeight * 0.005),
               ListTile(
                   leading: Container(
                     height: screenHeight * 0.04,
@@ -755,6 +755,34 @@ class _DrawerChildState extends State<DrawerChild> {
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (ctx) => const HelpSupport()));
+                      },
+                      icon: const Icon(Icons.navigate_next))),
+              SizedBox(
+                height: screenHeight * 0.18,
+              ),
+              ListTile(
+                  leading: Container(
+                    height: screenHeight * 0.04,
+                    width: screenHeight * 0.04,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFBEEEE),
+                      borderRadius: BorderRadius.circular(screenHeight * 0.01),
+                    ),
+                    child: const Icon(
+                      Icons.support_agent_outlined,
+                      color: Color(0xFFC1272D),
+                    ),
+                  ),
+                  title: Text(
+                    'LogOut',
+                    style: TextStyle(fontSize: screenWidth * 0.034),
+                  ),
+                  trailing: IconButton(
+                      onPressed: ()async {
+                        var sharedpref=await SharedPreferences.getInstance();
+                        sharedpref.setBool(HiremiScreenState.KEYLOGIN, false);
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => const LogIn()));
                       },
                       icon: const Icon(Icons.navigate_next))),
             ],
