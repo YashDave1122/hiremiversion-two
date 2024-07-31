@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hiremi_version_two/Sharedpreferences_data/shared_preferences_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hiremi_version_two/Edit_Profile_Section/Key%20Skills/AddKeySkills.dart';
 import 'package:hiremi_version_two/Edit_Profile_Section/widgets/CustomTextField.dart';
@@ -13,12 +14,13 @@ class AddProfileSummary extends StatelessWidget {
 
   final summaryController = TextEditingController();
   final AddProfileSummaryService _apiService = AddProfileSummaryService();
+  String profileId='';
 
   Future<void> _saveProfileSummary(BuildContext context) async {
     if (summaryController.text.isNotEmpty) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? profileId = prefs.getString('profileId');
-      print('Profile ID: $profileId');
+      final int? savedId = await SharedPreferencesHelper.getProfileId();
+      profileId=savedId.toString();
+      print(savedId);
 
       if (profileId == null) {
         ScaffoldMessenger.of(context).showSnackBar(

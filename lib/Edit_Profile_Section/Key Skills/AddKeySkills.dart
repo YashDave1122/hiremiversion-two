@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hiremi_version_two/Sharedpreferences_data/shared_preferences_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:hiremi_version_two/Edit_Profile_Section/Education/AddEducation.dart';
 import 'package:hiremi_version_two/Profile_Screen.dart';
@@ -13,23 +14,14 @@ class AddKeySkills extends StatelessWidget {
 
   final skillController = TextEditingController();
   final AddKeySkillsService _apiService = AddKeySkillsService();
-  String profileId="";
+  String profileId = "";
 
   Future<void> _saveKeySkills(BuildContext context) async {
     if (skillController.text.isNotEmpty) {
-      // final SharedPreferences prefs = await SharedPreferences.getInstance();
-      // final String? profileId = prefs.getString('profileId');
-      // print('Profile ID: $profileId');
-      final prefs = await SharedPreferences.getInstance();
-      final int? savedId = prefs.getInt('userId');
-      if (savedId != null) {
-        print("Retrieved id is $savedId");
-        profileId=savedId.toString();
-      } else {
-        print("No id found in SharedPreferences");
-      }
+      final int? savedId = await SharedPreferencesHelper.getProfileId();
+      profileId = savedId?.toString() ?? "";
 
-      if (profileId == null) {
+      if (profileId.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Profile ID not found')),
         );

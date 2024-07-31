@@ -16,6 +16,7 @@ class AddExperience extends StatefulWidget {
 class _AddExperienceState extends State<AddExperience> {
   String experience = '';
   String environment = '';
+  String currentCompany = '';
   final organizationController = TextEditingController();
   final jobTitleController = TextEditingController();
   final skillSetController = TextEditingController();
@@ -42,9 +43,12 @@ class _AddExperienceState extends State<AddExperience> {
   Future<void> _saveExperience() async {
     if (organizationController.text.isNotEmpty &&
         jobTitleController.text.isNotEmpty &&
-        joiningDateController.text.isNotEmpty) {
+        joiningDateController.text.isNotEmpty &&
+        experience.isNotEmpty &&
+        environment.isNotEmpty &&
+        currentCompany.isNotEmpty) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? profileId = prefs.getString('profileId');
+      final String? profileId = prefs.getInt('profileId')?.toString();
       print('Profile ID: $profileId');
 
       if (profileId == null) {
@@ -55,11 +59,14 @@ class _AddExperienceState extends State<AddExperience> {
       }
 
       final details = {
-        "job_title": jobTitleController.text,
+        "work_experience": experience,
+        "work_environment": environment,
         "company_name": organizationController.text,
+        "job_title": jobTitleController.text,
+        "skill_used": skillSetController.text.isEmpty ? null : skillSetController.text,
         "start_date": joiningDateController.text,
+        "current_company": currentCompany,
         "end_date": null,
-        "description": skillSetController.text,
         "profile": profileId,
       };
       print(details);
@@ -75,6 +82,10 @@ class _AddExperienceState extends State<AddExperience> {
           SnackBar(content: Text('Failed to add experience details')),
         );
       }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill all required fields')),
+      );
     }
   }
 
@@ -123,7 +134,7 @@ class _AddExperienceState extends State<AddExperience> {
                 children: [
                   Radio<String>(
                     activeColor: Colors.blue,
-                    value: 'Yes',
+                    value: 'YES',
                     groupValue: experience,
                     onChanged: (value) => setState(() {
                       experience = value!;
@@ -134,7 +145,7 @@ class _AddExperienceState extends State<AddExperience> {
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 11,
-                      color: experience == 'Yes'
+                      color: experience == 'YES'
                           ? Colors.black
                           : AppColors.secondaryText,
                     ),
@@ -145,7 +156,7 @@ class _AddExperienceState extends State<AddExperience> {
                 children: [
                   Radio<String>(
                     activeColor: Colors.blue,
-                    value: 'No',
+                    value: 'NO',
                     groupValue: experience,
                     onChanged: (value) {
                       setState(() {
@@ -158,7 +169,7 @@ class _AddExperienceState extends State<AddExperience> {
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 11,
-                      color: experience == 'No'
+                      color: experience == 'NO'
                           ? Colors.black
                           : AppColors.secondaryText,
                     ),
@@ -190,18 +201,42 @@ class _AddExperienceState extends State<AddExperience> {
                 children: [
                   Radio<String>(
                     activeColor: Colors.blue,
-                    value: 'Full-time',
+                    value: 'On-Site',
                     groupValue: environment,
                     onChanged: (value) => setState(() {
                       environment = value!;
                     }),
                   ),
                   Text(
-                    'Full-time',
+                    'On-Site',
                     style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 11,
-                      color: environment == 'Full-time'
+                      color: environment == 'On-Site'
+                          ? Colors.black
+                          : AppColors.secondaryText,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Radio<String>(
+                    activeColor: Colors.blue,
+                    value: 'Hybrid',
+                    groupValue: environment,
+                    onChanged: (value) {
+                      setState(() {
+                        environment = value!;
+                      });
+                    },
+                  ),
+                  Text(
+                    'Hybrid',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 11,
+                      color: environment == 'Hybrid'
                           ? Colors.black
                           : AppColors.secondaryText,
                     ),
@@ -236,6 +271,72 @@ class _AddExperienceState extends State<AddExperience> {
           ),
           Row(
             children: [
+              const Text(
+                'Is this your current company?',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+              ),
+              Text(
+                '*',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.primary,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Row(
+                children: [
+                  Radio<String>(
+                    activeColor: Colors.blue,
+                    value: 'YES',
+                    groupValue: currentCompany,
+                    onChanged: (value) => setState(() {
+                      currentCompany = value!;
+                    }),
+                  ),
+                  Text(
+                    'Yes',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 11,
+                      color: currentCompany == 'YES'
+                          ? Colors.black
+                          : AppColors.secondaryText,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Radio<String>(
+                    activeColor: Colors.blue,
+                    value: 'NO',
+                    groupValue: currentCompany,
+                    onChanged: (value) {
+                      setState(() {
+                        currentCompany = value!;
+                      });
+                    },
+                  ),
+                  Text(
+                    'No',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 11,
+                      color: currentCompany == 'NO'
+                          ? Colors.black
+                          : AppColors.secondaryText,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Row(
+            children: [
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,19 +356,14 @@ class _AddExperienceState extends State<AddExperience> {
                         ),
                       ),
                     ]),
-                    SizedBox(
-                      height: Sizes.responsiveSm(context),
-                    ),
                     CustomTextField(
                       controller: organizationController,
-                      hintText: 'eg: Google',
+                      hintText: '',
                     ),
                   ],
                 ),
               ),
-              SizedBox(
-                width: Sizes.responsiveMd(context),
-              ),
+              SizedBox(width: Sizes.responsiveSm(context)),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -287,25 +383,21 @@ class _AddExperienceState extends State<AddExperience> {
                         ),
                       ),
                     ]),
-                    SizedBox(
-                      height: Sizes.responsiveSm(context),
-                    ),
                     CustomTextField(
                       controller: jobTitleController,
-                      hintText: 'eg: Software Developer',
+                      hintText: '',
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: Sizes.responsiveMd(context)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
                 const Text(
-                  'SkillSet Used (Optional)',
+                  'Skill Set Used',
                   style: TextStyle(
                       fontSize: 12, fontWeight: FontWeight.w500),
                 ),
@@ -318,16 +410,12 @@ class _AddExperienceState extends State<AddExperience> {
                   ),
                 ),
               ]),
-              SizedBox(
-                height: Sizes.responsiveSm(context),
-              ),
               CustomTextField(
                 controller: skillSetController,
-                hintText: 'eg: Java, Python etc.',
+                hintText: '',
               ),
             ],
           ),
-          SizedBox(height: Sizes.responsiveMd(context)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

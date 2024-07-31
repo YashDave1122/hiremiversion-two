@@ -4,6 +4,7 @@ import 'package:hiremi_version_two/Custom_Widget/Curved_Container.dart';
 import 'package:hiremi_version_two/Custom_Widget/Elevated_Button.dart';
 import 'package:hiremi_version_two/Custom_Widget/SliderPageRoute.dart';
 import 'package:hiremi_version_two/HiremiScreen.dart';
+import 'package:hiremi_version_two/Sharedpreferences_data/shared_preferences_helper.dart';
 import 'package:hiremi_version_two/bottomnavigationbar.dart';
 import 'package:hiremi_version_two/Forget_Your_Password.dart';
 import 'package:hiremi_version_two/Register.dart';
@@ -29,18 +30,14 @@ class _LogInState extends State<LogIn>{
 
 
   Future<String?> _printSavedEmail() async {
-
     final prefs = await SharedPreferences.getInstance();
-    final id=await SharedPreferences.getInstance();
+    final id = await SharedPreferences.getInstance();
     setState(() {
       _savedEmail = prefs.getString('email') ?? 'No email saved';
-
     });
 
     print("Saved email is $_savedEmail");
-     await _isEmailVerified();
-
-
+    await _isEmailVerified();
   }
 
 
@@ -54,13 +51,13 @@ class _LogInState extends State<LogIn>{
         if (user['email'] == _savedEmail) {
           id = user['id'];
 
-
-          final pref=await SharedPreferences.getInstance();
+          final pref = await SharedPreferences.getInstance();
           await pref.setInt('userId', id);
           print("Id is $id");
+          await _createProfile(id);
           await _retrieveId();
           print("Verified is ${user['verified']}");
-          var sharedpref=await SharedPreferences.getInstance();
+          var sharedpref = await SharedPreferences.getInstance();
           sharedpref.setBool(HiremiScreenState.KEYLOGIN, true);
           Navigator.push(
             context,
@@ -71,12 +68,34 @@ class _LogInState extends State<LogIn>{
           return true;
         }
       }
-      }
-
+    }
     return false;
   }
 
+  Future<void> _createProfile(int userId) async {
+    final String apiUrl = "http://13.127.81.177:8000/api/profiles/";
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "register": userId,
+      }),
+    );
 
+    if (response.statusCode == 201) {
+      final profile = jsonDecode(response.body);
+      var profileId = profile['id'];
+
+      final pref = await SharedPreferences.getInstance();
+      await pref.setInt('profileId', profileId);
+      await SharedPreferencesHelper.setProfileId(profileId);
+      print("Profile created with ID: $profileId");
+    } else {
+      print(response.statusCode);
+      print(response.body);
+      print("Failed to create profile");
+    }
+  }
 
   Future<void> _retrieveId() async {
     final prefs = await SharedPreferences.getInstance();
@@ -88,13 +107,11 @@ class _LogInState extends State<LogIn>{
     }
   }
 
-
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) {
       // Invalid inputs
       return;
     }
-
 
     final String apiUrl = "http://13.127.81.177:8000/login/";
     final response = await http.post(
@@ -107,19 +124,12 @@ class _LogInState extends State<LogIn>{
     );
 
     if (response.statusCode == 200) {
-
-
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('email', _emailController.text); // Save email to SharedPreferences
 
       print("Login successful");
       _printSavedEmail();
-
-
-
-    }
-
-    else {
+    } else {
       // Login failed
       print("Login failed");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -130,7 +140,6 @@ class _LogInState extends State<LogIn>{
       );
     }
   }
-
   @override
   void initState() {
 
@@ -255,9 +264,6 @@ class _LogInState extends State<LogIn>{
                         ),
                         // Set to true to show the box with the prefix icon
                       ),
-
-
-
 
                       SizedBox(height: MediaQuery.of(context).size.height * 0.00085),
                       Padding(

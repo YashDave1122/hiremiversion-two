@@ -122,6 +122,7 @@ import 'package:hiremi_version_two/Notofication_screen.dart';
 import 'package:hiremi_version_two/SuccesfullyAppliedalert.dart';
 import 'package:hiremi_version_two/Utils/AppSizes.dart';
 import 'package:hiremi_version_two/Utils/colors.dart';
+import 'package:hiremi_version_two/fresherJobs.dart';
 
 import '../API_Integration/Apply Fresher Jobs/apiServices.dart';
 
@@ -171,9 +172,9 @@ class _DetailedFresherJobsState extends State<DetailedFresherJobs> {
 
     try {
       await ApiServices.applyForJob(widget.id, context);
-      setState(() {
-        _isApplied = true;
-      });
+      // setState(() {
+      //   _isApplied = true;
+      // });
     } catch (error) {
       print('Error applying for fresher job: $error');
     }
@@ -186,6 +187,13 @@ class _DetailedFresherJobsState extends State<DetailedFresherJobs> {
         centerTitle: true,
         // title: const Text('Fresher Jobs', style:  TextStyle(
         //     fontSize: 16.0, fontWeight: FontWeight.w500, color: Colors.black),),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (ctx) => const FresherJobs(isVerified: true)));
+          },
+        ),
         actions: [
           IconButton(
             onPressed: () {
@@ -213,18 +221,19 @@ class _DetailedFresherJobsState extends State<DetailedFresherJobs> {
                 companyName: widget.companyName,
                 location: widget.location,
                 ctc: widget.ctc,
-                onTap:  ()=>showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                        contentPadding: EdgeInsets.zero,
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        content: const SuccessfullyAppliedAlert());
-                  },
-                ),
+                // onTap:  ()=>showDialog(
+                //   context: context,
+                //   builder: (BuildContext context) {
+                //     return AlertDialog(
+                //         contentPadding: EdgeInsets.zero,
+                //         backgroundColor: Colors.white,
+                //         shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(20),
+                //         ),
+                //         content: const SuccessfullyAppliedAlert());
+                //   },
+                // ),
+                onTap: _applyForFresherJob,
               ),
 
               SizedBox(height: Sizes.responsiveXl(context)),
@@ -251,46 +260,46 @@ class _DetailedFresherJobsState extends State<DetailedFresherJobs> {
               EligibilityCriteriaAboutCompanyFresher(
 
               ),
-              Center(
-                child: SizedBox(
-                  width: Sizes.responsiveXxl(context) * 2.02,
-                  height: Sizes.responsiveLg(context) * 1.06,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _isApplied ? Colors.green : Color(0xFFC1272D),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(Sizes.radiusXs),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: Sizes.responsiveHorizontalSpace(context),
-                        horizontal: Sizes.responsiveMdSm(context),
-                      ),
-                    ),
-                    onPressed: _isApplied ? null : _applyForFresherJob,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text(
-                          'Apply Now',
-                          style: TextStyle(
-                            fontSize: 8.5,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.white,
-                          ),
-                        ),
-                        SizedBox(
-                          width: Sizes.responsiveXs(context),
-                        ),
-                        const Icon(
-                          Icons.arrow_forward_ios_sharp,
-                          size: 8,
-                          color: AppColors.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              // Center(
+              //   child: SizedBox(
+              //     width: Sizes.responsiveXxl(context) * 2.02,
+              //     height: Sizes.responsiveLg(context) * 1.06,
+              //     child: ElevatedButton(
+              //       style: ElevatedButton.styleFrom(
+              //         backgroundColor: _isApplied ? Colors.green : Color(0xFFC1272D),
+              //         shape: RoundedRectangleBorder(
+              //           borderRadius: BorderRadius.circular(Sizes.radiusXs),
+              //         ),
+              //         padding: EdgeInsets.symmetric(
+              //           vertical: Sizes.responsiveHorizontalSpace(context),
+              //           horizontal: Sizes.responsiveMdSm(context),
+              //         ),
+              //       ),
+              //       onPressed: _isApplied ? null : _applyForFresherJob,
+              //       child: Row(
+              //         mainAxisSize: MainAxisSize.min,
+              //         children: [
+              //           const Text(
+              //             'Apply Now',
+              //             style: TextStyle(
+              //               fontSize: 8.5,
+              //               fontWeight: FontWeight.w500,
+              //               color: AppColors.white,
+              //             ),
+              //           ),
+              //           SizedBox(
+              //             width: Sizes.responsiveXs(context),
+              //           ),
+              //           const Icon(
+              //             Icons.arrow_forward_ios_sharp,
+              //             size: 8,
+              //             color: AppColors.white,
+              //           ),
+              //         ],
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

@@ -7,6 +7,8 @@ import 'package:hiremi_version_two/Internships/skillsRequired.dart';
 import 'package:hiremi_version_two/Utils/AppSizes.dart';
 import 'package:hiremi_version_two/Utils/colors.dart';
 
+import '../API_Integration/Apply Fresher Jobs/apiServices.dart';
+
 class DetailedInternship extends StatefulWidget {
   final int id;
   final String profile;
@@ -44,6 +46,18 @@ class DetailedInternship extends StatefulWidget {
 }
 
 class _DetailedInternshipState extends State<DetailedInternship> {
+  Future<void> _applyForInternship() async {
+    print(widget.id);
+
+    try {
+      await ApiServices.applyForInternship(widget.id, context);
+      // setState(() {
+      //   _isApplied = true;
+      // });
+    } catch (error) {
+      print('Error applying for fresher job: $error');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,6 +92,7 @@ class _DetailedInternshipState extends State<DetailedInternship> {
                 companyName: widget.companyName,
                 location: widget.location,
                 ctc: widget.ctc,
+                onTap:_applyForInternship ,
               ),
               SizedBox(height: Sizes.responsiveXl(context)),
 

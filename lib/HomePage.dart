@@ -386,7 +386,7 @@ class _HomePageState extends State<HomePage> {
                       description: job['description'] ?? 'No description available',
                       education: job['education'],
                       skillsRequired: job['skills_required'],
-                      whoCanApply: job['who_can_apply'],
+                      whoCanApply: job['who_can_apply'], isApplied: false,
                     ),
                   );
                 }).toList(),

@@ -290,6 +290,9 @@ final List<String> _states = [
                         if (value.length < 10) {
                           return 'Please enter a valid phone number';
                         }
+                        if (value.length > 10) {
+                          return 'Please enter a valid Phone number';
+                        }
                         if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                           return 'Special characters are not allowed';
                         }
@@ -326,13 +329,16 @@ final List<String> _states = [
                         if (value.length < 10) {
                           return 'Please enter a valid WhatsApp number';
                         }
+                        if (value.length > 10) {
+                          return 'Please enter a valid WhatsApp number';
+                        }
+
                         if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                           return 'Please enter a valid WhatsApp number without special characters';
                         }
                         return null;
                       },
                     ),
-
                     buildSectionHeader("Educational Information"),
                     buildLabeledTextField(
                       context,
