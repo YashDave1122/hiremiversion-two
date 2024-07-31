@@ -64,7 +64,12 @@ class _DetailedInternshipState extends State<DetailedInternship> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
         actions: [
           IconButton(
             onPressed: () {

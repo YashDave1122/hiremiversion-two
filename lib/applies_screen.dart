@@ -148,7 +148,7 @@ class _AppliesScreenState extends State<AppliesScreen> {
                 padding: EdgeInsets.all(screenWidth*0.02),
                 child: TextButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> const Experienced_Jobs()));
+                    Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=>  ExperiencedJobs(isVerified: widget.isVerified)));
                   },
                   style: ButtonStyle(
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(

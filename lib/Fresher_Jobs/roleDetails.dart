@@ -156,41 +156,41 @@ class RoleDetailsFresher extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
             ),
-            Padding(
-              padding:
-              EdgeInsets.only(left: Sizes.responsiveXxs(context)),
-              // First
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildBulletPoint(
-                      context: context,
-                      number: '1.',
-                      text:
-                      'Sourcing and Recruiting: Identify and recruit potential candidates through various channels.'),
-                  buildBulletPoint(
-                      context: context,
-                      number: '2.',
-                      text:
-                      'Screening Resumes: Evaluate candidate qualifications and skills.'),
-                  buildBulletPoint(
-                      context: context,
-                      number: '3.',
-                      text:
-                      'Conducting Interviews: Arrange and conduct interviews with potential candidates.'),
-                  buildBulletPoint(
-                      context: context,
-                      number: '4.',
-                      text:
-                      'Coordinating: Manage and coordinate with hiring managers to fulfill staffing needs.'),
-                  buildBulletPoint(
-                      context: context,
-                      number: '5.',
-                      text:
-                      'Maintaining Records: Keep accurate records of all candidates and their status in the hiring process.'),
-                ],
-              ),
-            )
+            // Padding(
+            //   padding:
+            //   EdgeInsets.only(left: Sizes.responsiveXxs(context)),
+            //   // First
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       buildBulletPoint(
+            //           context: context,
+            //           number: '1.',
+            //           text:
+            //           'Sourcing and Recruiting: Identify and recruit potential candidates through various channels.'),
+            //       buildBulletPoint(
+            //           context: context,
+            //           number: '2.',
+            //           text:
+            //           'Screening Resumes: Evaluate candidate qualifications and skills.'),
+            //       buildBulletPoint(
+            //           context: context,
+            //           number: '3.',
+            //           text:
+            //           'Conducting Interviews: Arrange and conduct interviews with potential candidates.'),
+            //       buildBulletPoint(
+            //           context: context,
+            //           number: '4.',
+            //           text:
+            //           'Coordinating: Manage and coordinate with hiring managers to fulfill staffing needs.'),
+            //       buildBulletPoint(
+            //           context: context,
+            //           number: '5.',
+            //           text:
+            //           'Maintaining Records: Keep accurate records of all candidates and their status in the hiring process.'),
+            //     ],
+            //   ),
+            // )
           ],
         ),
       ],

@@ -330,7 +330,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: TextButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => const Experienced_Jobs()));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (ctx) =>  ExperiencedJobs(isVerified: widget.isVerified)));
                       },
                       child: Row(
                         children: [

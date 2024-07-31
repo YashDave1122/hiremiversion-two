@@ -208,9 +208,7 @@ class OpportunityCard extends StatelessWidget {
                           profile: profile,
                           location: location,
                           codeRequired: '',
-
                           code: 0,
-
                           companyName: companyName,
                           education: education,
                           skillsRequired: skillsRequired,
